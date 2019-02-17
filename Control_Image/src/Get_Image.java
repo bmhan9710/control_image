@@ -1,3 +1,4 @@
+import java.awt.Desktop;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
@@ -6,6 +7,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URL;
 
 import javax.imageio.ImageIO;
 
@@ -19,12 +22,28 @@ public class Get_Image {
 		String path = "/Users/bmhan/Downloads/20190125_160513_";
 		
 		Get_Image getImg = new Get_Image();
-		getImg.image_resize(path);
+		//getImg.image_resize(path);
+		
 		
 		System.out.print("Hello World");
 		
-	}
+		String uri = "https://namu.wiki/w/%EB%B0%A4%ED%86%A0%EB%81%BC";
 		
+		
+		getImg.openWebpage(uri);
+		
+		//getImg.fileCopy("https://toonkor.blue/data/wtoon/20180221_215724_21473.jpg", "/Users/bmhan/Downloads/test_result.jpg");
+		System.out.print("Complete");
+	}
+	
+	public static void openWebpage(String urlString) {
+	    try {
+	        Desktop.getDesktop().browse(new URL(urlString).toURI());
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	}
+	
 	public void image_resize(String path) throws IOException{
 		
 		File dir = new File(path);
@@ -100,7 +119,7 @@ public class Get_Image {
 		return isTarget;
 	}
 
-	public void fileCopy(String inFileName, String outFileName) {
+	public void fileCopy(String inFileName, String outFileName){
 		try{
 				FileInputStream fis = new FileInputStream(inFileName);
 				FileOutputStream fos = new FileOutputStream(outFileName);
