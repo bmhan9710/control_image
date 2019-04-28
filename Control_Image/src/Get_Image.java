@@ -27,7 +27,7 @@ public class Get_Image {
 		
 		System.out.print("Hello World");
 		
-		String uri = "https://namu.wiki/w/%EB%B0%A4%ED%86%A0%EB%81%BC";
+		String uri = "http://www.ilbe.com/11138992754/widgets/keyword_rank/skins/default/img/search_icon.png";
 		
 		
 		getImg.openWebpage(uri);
@@ -137,7 +137,7 @@ public class Get_Image {
 		}
 	}
 	
-	public void fileRename(File mainFile) {
+	public void fileRename(File mainFile) {	// REQUIRE MODIFICATION OF PARAMETER (File mainFile, String Concat_Str)
 		String temp = "";
 		for(int i=0; i<mainFile.getName().length(); i++) {
 			if(mainFile.getName().charAt(i)=='_') {
@@ -169,4 +169,70 @@ public class Get_Image {
 		File tempFile = new File(mainFile.getParent() + "/20060621_" + mainFile.getName());
 		mainFile.renameTo(tempFile);
 	}
+	
+	public static void fileUrlReadAndDownload(String fileAddress,
+			   String localFileName, String downloadDir) {
+			  OutputStream outStream = null;
+			  URLConnection uCon = null;
+
+			  InputStream is = null;
+			  try {
+
+			   System.out.println("-------Download Start------");
+
+			   URL Url;
+			   byte[] buf;
+			   int byteRead;
+			   int byteWritten = 0;
+			   Url = new URL("fileAddress");
+			   outStream = new BufferedOutputStream(new FileOutputStream(
+			     downloadDir + "\\" + localFileName));
+
+			   uCon = Url.openConnection();
+			   is = uCon.getInputStream();
+			   buf = new byte[size];
+			   while ((byteRead = is.read(buf)) != -1) {
+			    outStream.write(buf, 0, byteRead);
+			    byteWritten += byteRead;
+			   }
+
+			   System.out.println("Download Successfully.");
+			   System.out.println("File name : " + localFileName);
+			   System.out.println("of bytes  : " + byteWritten);
+			   System.out.println("-------Download End--------");
+
+			  } catch (Exception e) {
+			   e.printStackTrace();
+			  } finally {
+			   try {
+			    is.close();
+			    outStream.close();
+			   } catch (IOException e) {
+			    e.printStackTrace();
+			   }
+			  }
+			 }
+
+			 /**
+			  * 
+			  * @param fileAddress
+			  * @param downloadDir
+			  */
+			 public static void fileUrlDownload(String fileAddress, String downloadDir) {
+
+			  int slashIndex = fileAddress.lastIndexOf('/');
+			  int periodIndex = fileAddress.lastIndexOf('.');
+
+			  // 파일 어드레스에서 마지막에 있는 파일이름을 취득
+			  String fileName = fileAddress.substring(slashIndex + 1);
+
+			  if (periodIndex >= 1 && slashIndex >= 0
+			    && slashIndex < fileAddress.length() - 1) {
+			   fileUrlReadAndDownload(fileAddress, fileName, downloadDir);
+			  } else {
+			   System.err.println("path or file name NG.");
+			  }
+			 }
+
+	
 }
