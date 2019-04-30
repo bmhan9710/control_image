@@ -137,12 +137,12 @@ public class Get_Image {
 		}
 	}
 
-	public void fileRename(File mainFile) { // REQUIRE MODIFICATION OF PARAMETER (File mainFile, String Concat_Str)
+	public void fileRename_back(File mainFile, String concat_Str) {
 		String temp = "";
 		for (int i = 0; i < mainFile.getName().length(); i++) {
-			if (mainFile.getName().charAt(i) == '_') {
+			if (mainFile.getName().charAt(i) == '_') {  // find the latest '_' in the filename
 				temp = temp + '_';
-				temp = temp + "1H-ECP_";
+				temp = temp + concat_Str;
 			} else {
 				temp = temp + mainFile.getName().charAt(i);
 			}
@@ -152,16 +152,8 @@ public class Get_Image {
 
 	}
 
-	/*
-	 * public void fileRename(File mainFile) { String temp = ""; for(int i=0;
-	 * i<mainFile.getName().length(); i++) { if(mainFile.getName().charAt(i)=='-') {
-	 * }else { temp = temp + mainFile.getName().charAt(i); } } File tempFile = new
-	 * File(mainFile.getParent() + temp); mainFile.renameTo(tempFile);
-	 * 
-	 * }
-	 */
 
-	public void fileRename2(File mainFile) {
+	public void fileRename_front(File mainFile) {
 		File tempFile = new File(mainFile.getParent() + "/20060621_" + mainFile.getName());
 		mainFile.renameTo(tempFile);
 	}
