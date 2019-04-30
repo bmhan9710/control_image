@@ -26,10 +26,14 @@ public class Get_Image {
 
 		System.out.print("Hello World");
 
-		String uri = "http://www.ilbe.com/11138992754/widgets/keyword_rank/skins/default/img/search_icon.png";
-
-		getImg.openWebpage(uri);
-
+		String fileAddress = "https://eguru.tumblr.com/post/184460182842/%EB%B2%A0%EB%A5%B4%EC%84%B8%EB%A5%B4%ED%81%AC-358%ED%99%94";
+		String downloadDir = "C:/Users/bmhan/Desktop";
+		String localFileName = "get_code.txt";
+		
+		//getImg.openWebpage(uri);
+		getImg.fileUrlReadAndDownload(fileAddress, downloadDir, localFileName);
+		
+		
 		// getImg.fileCopy("https://toonkor.blue/data/wtoon/20180221_215724_21473.jpg",
 		// "/Users/bmhan/Downloads/test_result.jpg");
 		System.out.print("Complete");
@@ -158,7 +162,7 @@ public class Get_Image {
 		mainFile.renameTo(tempFile);
 	}
 
-	public static void fileUrlReadAndDownload(String fileAddress, String localFileName, String downloadDir) {
+	public static void fileUrlReadAndDownload(String fileAddress, String downloadDir, String localFileName) {
 		OutputStream outStream = null;
 		URLConnection uCon = null;
 
@@ -171,7 +175,8 @@ public class Get_Image {
 			byte[] buf;
 			int byteRead;
 			int byteWritten = 0;
-			Url = new URL("fileAddress");
+			int size = 500;   // 임의로 정함
+			Url = new URL(fileAddress);
 			outStream = new BufferedOutputStream(new FileOutputStream(downloadDir + "\\" + localFileName));
 
 			uCon = Url.openConnection();
