@@ -10,6 +10,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
@@ -19,20 +20,22 @@ import javax.imageio.ImageIO;
 public class Get_Image {
 	public static void main(String[] args) throws IOException {
 
-		String path = "/Users/bmhan/Downloads/20190125_160513_";
+		//String path = "/Users/bmhan/Downloads/20190125_160513_";
 
 		Get_Image getImg = new Get_Image();
 		// getImg.image_resize(path);
 
 		System.out.print("Hello World");
 
-		String fileAddress = "https://eguru.tumblr.com/post/184460182842/%EB%B2%A0%EB%A5%B4%EC%84%B8%EB%A5%B4%ED%81%AC-358%ED%99%94";
+		String fileAddress = "https://adt.ak2frame07.com/board/webtoon/view/wr_id/192480";
 		String downloadDir = "C:/Users/bmhan/Desktop";
-		String localFileName = "get_code.txt";
+		String localFileName = "동네누나7.txt";
 		
 		//getImg.openWebpage(uri);
 		getImg.fileUrlReadAndDownload(fileAddress, downloadDir, localFileName);
 		
+		//getImg.urlImageDownload("https://assets.tumblr.com/images/default_header/optica_pattern_08.png", "C:/Users/bmhan/Desktop/test.png");
+		//getImg.fileUrlDownload(fileAddress, downloadDir);
 		
 		// getImg.fileCopy("https://toonkor.blue/data/wtoon/20180221_215724_21473.jpg",
 		// "/Users/bmhan/Downloads/test_result.jpg");
@@ -103,7 +106,7 @@ public class Get_Image {
 
 				// if(checkFileName(testName)==true) {
 				System.out.println("Target File");
-				fileRename2(file);
+				//fileRename_back(file);
 				System.out.println("Updated file Name : " + file.getName());
 				// }
 
@@ -161,7 +164,7 @@ public class Get_Image {
 		File tempFile = new File(mainFile.getParent() + "/20060621_" + mainFile.getName());
 		mainFile.renameTo(tempFile);
 	}
-
+	
 	public static void fileUrlReadAndDownload(String fileAddress, String downloadDir, String localFileName) {
 		OutputStream outStream = null;
 		URLConnection uCon = null;
@@ -175,14 +178,16 @@ public class Get_Image {
 			byte[] buf;
 			int byteRead;
 			int byteWritten = 0;
-			int size = 500;   // 임의로 정함
+			int size = 10000;   // 임의로 정함
 			Url = new URL(fileAddress);
 			outStream = new BufferedOutputStream(new FileOutputStream(downloadDir + "\\" + localFileName));
 
 			uCon = Url.openConnection();
+			uCon.addRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)");  // 403 에러 방지해주는 코드
 			is = uCon.getInputStream();
 			buf = new byte[size];
 			while ((byteRead = is.read(buf)) != -1) {
+				System.out.print("Test" + buf);
 				outStream.write(buf, 0, byteRead);
 				byteWritten += byteRead;
 			}
@@ -204,11 +209,13 @@ public class Get_Image {
 		}
 	}
 
+	
 	/**
 	 * 
 	 * @param fileAddress
 	 * @param downloadDir
 	 */
+	/*
 	public static void fileUrlDownload(String fileAddress, String downloadDir) {
 
 		int slashIndex = fileAddress.lastIndexOf('/');
@@ -223,5 +230,23 @@ public class Get_Image {
 			System.err.println("path or file name NG.");
 		}
 	}
-
+	*/
+	
+	public static void urlImageDownload(String fileAddress, String downloadDir) {
+		File outputFile = new File(downloadDir); // 저장할 경로 및 파일명
+		 
+		URL url = null;
+		BufferedImage bi = null;
+		        
+		try {
+		    url = new URL(fileAddress);
+		    bi = ImageIO.read(url);
+		    ImageIO.write(bi, "png", outputFile);
+		 
+		} catch (MalformedURLException e) {
+		   
+		} catch (IOException e) {
+		   
+		}
+	}
 }
