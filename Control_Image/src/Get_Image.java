@@ -19,27 +19,58 @@ import javax.imageio.ImageIO;
 
 public class Get_Image {
 	public static void main(String[] args) throws IOException {
-
-		//String path = "/Users/bmhan/Downloads/20190125_160513_";
-
-		Get_Image getImg = new Get_Image();
-		// getImg.image_resize(path);
+		Get_Image get = new Get_Image();
 
 		System.out.print("Hello World");
 
-		String fileAddress = "https://adt.ak2frame07.com/board/webtoon/view/wr_id/192480";
-		String downloadDir = "C:/Users/bmhan/Desktop";
-		String localFileName = "동네누나7.txt";
+		int a[] = {99, 3, 105, 24, 5, 1, 52, 25};
 		
-		//getImg.openWebpage(uri);
-		getImg.fileUrlReadAndDownload(fileAddress, downloadDir, localFileName);
+		for(int i=0; i<a.length; i++) {
+			System.out.print(a[i] + " ");
+		}System.out.println();
 		
-		//getImg.urlImageDownload("https://assets.tumblr.com/images/default_header/optica_pattern_08.png", "C:/Users/bmhan/Desktop/test.png");
-		//getImg.fileUrlDownload(fileAddress, downloadDir);
 		
-		// getImg.fileCopy("https://toonkor.blue/data/wtoon/20180221_215724_21473.jpg",
-		// "/Users/bmhan/Downloads/test_result.jpg");
+			get.mergeSort(a, 0, 7);
+		
+		
+		for(int i=0; i<a.length; i++) {
+			System.out.print(a[i] + " ");
+		}System.out.println();
+		
+		//String path = "/Users/bmhan/Documents/GomPlayer/Capture/hira";
+		//get.image_resize(path);
+		
 		System.out.print("Complete");
+	}
+	
+	public void mergeSort(int[] a, int start, int end) {
+		int temp;
+		int temp_arr[] = new int[end-start];
+		
+		System.out.println("Merge Complete. Start: " + start + " end: " + end);
+		
+		if(end-start<2) {
+			if(a[end]<a[start]) {
+				temp=a[end];
+				a[end]=a[start];
+				a[start]=temp;
+			}
+			for(int i=0; i<a.length; i++) {
+				System.out.print(a[i] + " ");
+			}System.out.println();
+		}else {
+			mergeSort(a, start, start+(end-start)/2);
+			
+			mergeSort(a, start+(end-start)/2+1, end);
+			
+			int a_cur = 0;
+			int b_cur = 0;
+			int temp_cur = 0;
+			
+			while(temp_cur < end)
+			
+			
+		}   
 	}
 
 	public static void openWebpage(String urlString) {
