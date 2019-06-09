@@ -23,16 +23,16 @@ public class Get_Image {
 
 		System.out.print("Hello World");
 
-		int a[] = {99, 3, 105, 24, 5, 1, 52, 25};
+		int a[] = {99, 3, 105, 24, 5, 1, 52, 25, 39, 222};
 		
 		for(int i=0; i<a.length; i++) {
 			System.out.print(a[i] + " ");
 		}System.out.println();
 		
 		
-			get.mergeSort(a, 0, 7);
+			get.mergeSort(a, 0, a.length-1);
 		
-		
+		System.out.print("Finished Result: ");
 		for(int i=0; i<a.length; i++) {
 			System.out.print(a[i] + " ");
 		}System.out.println();
@@ -45,9 +45,9 @@ public class Get_Image {
 	
 	public void mergeSort(int[] a, int start, int end) {
 		int temp;
-		int temp_arr[] = new int[end-start];
+		int temp_arr[] = new int[end-start+1];
 		
-		System.out.println("Merge Complete. Start: " + start + " end: " + end);
+		System.out.println("Separate Start: " + start + " end: " + end);
 		
 		if(end-start<2) {
 			if(a[end]<a[start]) {
@@ -55,6 +55,7 @@ public class Get_Image {
 				a[end]=a[start];
 				a[start]=temp;
 			}
+			System.out.print("Switch result: ");
 			for(int i=0; i<a.length; i++) {
 				System.out.print(a[i] + " ");
 			}System.out.println();
@@ -63,11 +64,39 @@ public class Get_Image {
 			
 			mergeSort(a, start+(end-start)/2+1, end);
 			
-			int a_cur = 0;
-			int b_cur = 0;
+			
+			int cur_front = start;
+			int cur_back = start+((end-start)/2)+1;
+			int limit_cur_front=cur_back;
+			int limit_cur_back=end+1;
 			int temp_cur = 0;
 			
-			while(temp_cur < end)
+  			while(temp_cur <= end-start) {
+  				if(cur_front >= limit_cur_front) {
+  					temp_arr[temp_cur]=a[cur_back];
+					cur_back++;
+  				}else if(cur_back >= limit_cur_back) {
+  					temp_arr[temp_cur]=a[cur_front];
+					cur_front++;
+  				}else {
+  					if(a[cur_front] <= a[cur_back]) {
+						temp_arr[temp_cur]=a[cur_front];
+						cur_front++;
+					}else if(a[cur_front] > a[cur_back]) {
+						temp_arr[temp_cur]=a[cur_back];
+						cur_back++;
+					}
+				}
+				temp_cur++;
+			}
+			for(int i=start, j=0; i<end+1; i++, j++) {
+				a[i] = temp_arr[j];
+			}
+			
+			System.out.print("Merge result: ");
+			for(int i=0; i<a.length; i++) {
+				System.out.print(a[i] + " ");
+			}System.out.println();
 			
 			
 		}   
