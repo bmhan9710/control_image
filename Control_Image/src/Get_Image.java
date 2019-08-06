@@ -38,8 +38,8 @@ public class Get_Image {
 			System.out.print(a[i] + " ");
 		}System.out.println();
 		
-		//String path = "/Users/bmhan/Documents/GomPlayer/Capture/hira";
-		//get.image_resize(path);
+		String path = "/Users/bmhan/Documents/GomPlayer/Capture/20190704_185202";
+		get.image_resize(path);
 		
 		System.out.print("Complete");
 	}
