@@ -22,7 +22,7 @@ public class Get_Image {
 		Get_Image get = new Get_Image();
 
 		System.out.print("Hello World");
-
+		System.out.print("Test2");
 		int a[] = {99, 3, 105, 24, 5, 1, 52, 25, 39, 222};
 		
 		for(int i=0; i<a.length; i++) {
@@ -37,8 +37,8 @@ public class Get_Image {
 			System.out.print(a[i] + " ");
 		}System.out.println();
 		
-		//String path = "/Users/bmhan/Documents/GomPlayer/Capture/hira";
-		//get.image_resize(path);
+		String path = "/Users/bmhan/Documents/GomPlayer/Capture/20190704_185202";
+		get.image_resize(path);
 		
 		System.out.print("Complete");
 	}
