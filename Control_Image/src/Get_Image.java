@@ -10,6 +10,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
@@ -18,21 +19,88 @@ import javax.imageio.ImageIO;
 
 public class Get_Image {
 	public static void main(String[] args) throws IOException {
-
-		String path = "/Users/bmhan/Downloads/20190125_160513_";
-
-		Get_Image getImg = new Get_Image();
-		// getImg.image_resize(path);
+		Get_Image get = new Get_Image();
 
 		System.out.print("Hello World");
-
-		String uri = "http://www.ilbe.com/11138992754/widgets/keyword_rank/skins/default/img/search_icon.png";
-
-		getImg.openWebpage(uri);
-
-		// getImg.fileCopy("https://toonkor.blue/data/wtoon/20180221_215724_21473.jpg",
-		// "/Users/bmhan/Downloads/test_result.jpg");
+		System.out.print("Add One");
+		
+		int a[] = {99, 3, 105, 24, 5, 1, 52, 25, 39, 222};
+		
+		for(int i=0; i<a.length; i++) {
+			System.out.print(a[i] + " ");
+		}System.out.println();
+		
+		
+			get.mergeSort(a, 0, a.length-1);
+		
+		System.out.print("Finished Result: ");
+		for(int i=0; i<a.length; i++) {
+			System.out.print(a[i] + " ");
+		}System.out.println();
+		
+		//String path = "/Users/bmhan/Documents/GomPlayer/Capture/hira";
+		//get.image_resize(path);
+		
 		System.out.print("Complete");
+	}
+	
+	public void mergeSort(int[] a, int start, int end) {
+		int temp;
+		int temp_arr[] = new int[end-start+1];
+		
+		System.out.println("Separate Start: " + start + " end: " + end);
+		
+		if(end-start<2) {
+			if(a[end]<a[start]) {
+				temp=a[end];
+				a[end]=a[start];
+				a[start]=temp;
+			}
+			System.out.print("Switch result: ");
+			for(int i=0; i<a.length; i++) {
+				System.out.print(a[i] + " ");
+			}System.out.println();
+		}else {
+			mergeSort(a, start, start+(end-start)/2);
+			
+			mergeSort(a, start+(end-start)/2+1, end);
+			
+			
+			int cur_front = start;
+			int cur_back = start+((end-start)/2)+1;
+			int limit_cur_front=cur_back;
+			int limit_cur_back=end+1;
+			int temp_cur = 0;
+			
+  			while(temp_cur <= end-start) {
+  				if(cur_front >= limit_cur_front) {
+  					temp_arr[temp_cur]=a[cur_back];
+					cur_back++;
+  				}else if(cur_back >= limit_cur_back) {
+  					temp_arr[temp_cur]=a[cur_front];
+					cur_front++;
+  				}else {
+  					if(a[cur_front] <= a[cur_back]) {
+						temp_arr[temp_cur]=a[cur_front];
+						cur_front++;
+					}else if(a[cur_front] > a[cur_back]) {
+						temp_arr[temp_cur]=a[cur_back];
+						cur_back++;
+					}
+				}
+				temp_cur++;
+			}
+			for(int i=start, j=0; i<end+1; i++, j++) {
+				a[i] = temp_arr[j];
+			}
+			
+			System.out.print("Merge result: ");
+			for(int i=0; i<a.length; i++) {
+				System.out.print(a[i] + " ");
+			}System.out.println();
+			
+			
+		}   
 	}
 
 	public static void openWebpage(String urlString) {
@@ -99,7 +167,7 @@ public class Get_Image {
 
 				// if(checkFileName(testName)==true) {
 				System.out.println("Target File");
-				fileRename2(file);
+				//fileRename_back(file);
 				System.out.println("Updated file Name : " + file.getName());
 				// }
 
@@ -137,12 +205,12 @@ public class Get_Image {
 		}
 	}
 
-	public void fileRename(File mainFile) { // REQUIRE MODIFICATION OF PARAMETER (File mainFile, String Concat_Str)
+	public void fileRename_back(File mainFile, String concat_Str) {
 		String temp = "";
 		for (int i = 0; i < mainFile.getName().length(); i++) {
-			if (mainFile.getName().charAt(i) == '_') {
+			if (mainFile.getName().charAt(i) == '_') {  // find the latest '_' in the filename
 				temp = temp + '_';
-				temp = temp + "1H-ECP_";
+				temp = temp + concat_Str;
 			} else {
 				temp = temp + mainFile.getName().charAt(i);
 			}
@@ -152,21 +220,13 @@ public class Get_Image {
 
 	}
 
-	/*
-	 * public void fileRename(File mainFile) { String temp = ""; for(int i=0;
-	 * i<mainFile.getName().length(); i++) { if(mainFile.getName().charAt(i)=='-') {
-	 * }else { temp = temp + mainFile.getName().charAt(i); } } File tempFile = new
-	 * File(mainFile.getParent() + temp); mainFile.renameTo(tempFile);
-	 * 
-	 * }
-	 */
 
-	public void fileRename2(File mainFile) {
+	public void fileRename_front(File mainFile) {
 		File tempFile = new File(mainFile.getParent() + "/20060621_" + mainFile.getName());
 		mainFile.renameTo(tempFile);
 	}
-
-	public static void fileUrlReadAndDownload(String fileAddress, String localFileName, String downloadDir) {
+	
+	public static void fileUrlReadAndDownload(String fileAddress, String downloadDir, String localFileName) {
 		OutputStream outStream = null;
 		URLConnection uCon = null;
 
@@ -179,13 +239,16 @@ public class Get_Image {
 			byte[] buf;
 			int byteRead;
 			int byteWritten = 0;
-			Url = new URL("fileAddress");
+			int size = 10000;   // 임의로 정함
+			Url = new URL(fileAddress);
 			outStream = new BufferedOutputStream(new FileOutputStream(downloadDir + "\\" + localFileName));
 
 			uCon = Url.openConnection();
+			uCon.addRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)");  // 403 에러 방지해주는 코드
 			is = uCon.getInputStream();
 			buf = new byte[size];
 			while ((byteRead = is.read(buf)) != -1) {
+				System.out.print("Test" + buf);
 				outStream.write(buf, 0, byteRead);
 				byteWritten += byteRead;
 			}
@@ -207,11 +270,13 @@ public class Get_Image {
 		}
 	}
 
+	
 	/**
 	 * 
 	 * @param fileAddress
 	 * @param downloadDir
 	 */
+	/*
 	public static void fileUrlDownload(String fileAddress, String downloadDir) {
 
 		int slashIndex = fileAddress.lastIndexOf('/');
@@ -226,5 +291,23 @@ public class Get_Image {
 			System.err.println("path or file name NG.");
 		}
 	}
-
+	*/
+	
+	public static void urlImageDownload(String fileAddress, String downloadDir) {
+		File outputFile = new File(downloadDir); // 저장할 경로 및 파일명
+		 
+		URL url = null;
+		BufferedImage bi = null;
+		        
+		try {
+		    url = new URL(fileAddress);
+		    bi = ImageIO.read(url);
+		    ImageIO.write(bi, "png", outputFile);
+		 
+		} catch (MalformedURLException e) {
+		   
+		} catch (IOException e) {
+		   
+		}
+	}
 }
