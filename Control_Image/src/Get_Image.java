@@ -22,7 +22,7 @@ public class Get_Image {
 		Get_Image get = new Get_Image();
 
 		System.out.print("Hello World");
-		System.out.print("Test3");
+		System.out.print("Test4");
 		int a[] = {99, 3, 105, 24, 5, 1, 52, 25, 39, 222};
 		
 		for(int i=0; i<a.length; i++) {
