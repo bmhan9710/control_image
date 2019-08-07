@@ -21,25 +21,13 @@ public class Get_Image {
 	public static void main(String[] args) throws IOException {
 		Get_Image get = new Get_Image();
 
-		System.out.print("Hello World");
-		System.out.print("Add One");
-		int g;
-		int a[] = {99, 3, 105, 24, 5, 1, 52, 25, 39, 222};
+
+	
+		String path = "/Users/bmhan/Documents/test_file";
+		//get.image_resize(path);
 		
-		for(int i=0; i<a.length; i++) {
-			System.out.print(a[i] + " ");
-		}System.out.println();
-		
-		
-			get.mergeSort(a, 0, a.length-1);
-		
-		System.out.print("Finished Result: ");
-		for(int i=0; i<a.length; i++) {
-			System.out.print(a[i] + " ");
-		}System.out.println();
-		
-		String path = "/Users/bmhan/Documents/GomPlayer/Capture/20190704_185202";
-		get.image_resize(path);
+		get.fileUrlReadAndDownload("https://smurfs.toptoon.com/assets/img/toptoon_thumb.jpg", path, "td01.jpg");
+		//fileUrlReadAndDownload(String fileAddress, String downloadDir, String localFileName)
 		
 		System.out.print("Complete");
 	}
@@ -226,6 +214,7 @@ public class Get_Image {
 		mainFile.renameTo(tempFile);
 	}
 	
+	// URL에서 이미지 다운로드 받아오는 함수.
 	public static void fileUrlReadAndDownload(String fileAddress, String downloadDir, String localFileName) {
 		OutputStream outStream = null;
 		URLConnection uCon = null;
@@ -293,7 +282,7 @@ public class Get_Image {
 	}
 	*/
 	
-	public static void urlImageDownload(String fileAddress, String downloadDir) {
+	/*public static void urlImageDownload(String fileAddress, String downloadDir) {
 		File outputFile = new File(downloadDir); // 저장할 경로 및 파일명
 		 
 		URL url = null;
@@ -302,12 +291,12 @@ public class Get_Image {
 		try {
 		    url = new URL(fileAddress);
 		    bi = ImageIO.read(url);
-		    ImageIO.write(bi, "png", outputFile);
+		    ImageIO.write(bi, "jpg", outputFile);
 		 
 		} catch (MalformedURLException e) {
 		   
 		} catch (IOException e) {
 		   
 		}
-	}
+	}*/
 }
