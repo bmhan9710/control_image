@@ -21,25 +21,12 @@ public class Get_Image {
 	public static void main(String[] args) throws IOException {
 		Get_Image get = new Get_Image();
 
-		System.out.print("Hello World");
-		System.out.print("Test4");
-		System.out.print("Test5");
-		int a[] = {99, 3, 105, 24, 5, 1, 52, 25, 39, 222};
+	
+		String path = "/Users/bmhan/Documents/test_file";
+		//get.image_resize(path);
 		
-		for(int i=0; i<a.length; i++) {
-			System.out.print(a[i] + " ");
-		}System.out.println();
-		
-		
-			get.mergeSort(a, 0, a.length-1);
-		
-		System.out.print("Finished Result: ");
-		for(int i=0; i<a.length; i++) {
-			System.out.print(a[i] + " ");
-		}System.out.println();
-		
-		String path = "/Users/bmhan/Documents/GomPlayer/Capture/20190704_185202";
-		get.image_resize(path);
+		get.fileUrlReadAndDownload("https://nim.ak2img12.com/data/toonsR/toon188977/7/066dc830c961200303da195c0c8a617b.jpg", path, "td01.jpg");
+		//fileUrlReadAndDownload(String fileAddress, String downloadDir, String localFileName)
 		
 		System.out.print("Complete");
 	}
@@ -302,7 +289,7 @@ public class Get_Image {
 		try {
 		    url = new URL(fileAddress);
 		    bi = ImageIO.read(url);
-		    ImageIO.write(bi, "png", outputFile);
+		    ImageIO.write(bi, "jpg", outputFile);
 		 
 		} catch (MalformedURLException e) {
 		   
