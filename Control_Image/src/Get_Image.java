@@ -25,7 +25,7 @@ public class Get_Image {
 		String path = "/Users/bmhan/Documents/test_file";
 		//get.image_resize(path);
 		
-		get.fileUrlReadAndDownload("https://nim.ak2img12.com/data/toonsR/toon188977/7/066dc830c961200303da195c0c8a617b.jpg", path, "td01.jpg");
+		get.fileUrlReadAndDownload("https://smurfs.toptoon.com/assets/img/toptoon_thumb.jpg", path, "td01.jpg");
 		//fileUrlReadAndDownload(String fileAddress, String downloadDir, String localFileName)
 		
 		System.out.print("Complete");
@@ -213,6 +213,7 @@ public class Get_Image {
 		mainFile.renameTo(tempFile);
 	}
 	
+	// URL에서 이미지 다운로드 받아오는 함수.
 	public static void fileUrlReadAndDownload(String fileAddress, String downloadDir, String localFileName) {
 		OutputStream outStream = null;
 		URLConnection uCon = null;
@@ -280,7 +281,7 @@ public class Get_Image {
 	}
 	*/
 	
-	public static void urlImageDownload(String fileAddress, String downloadDir) {
+	/*public static void urlImageDownload(String fileAddress, String downloadDir) {
 		File outputFile = new File(downloadDir); // 저장할 경로 및 파일명
 		 
 		URL url = null;
@@ -296,5 +297,5 @@ public class Get_Image {
 		} catch (IOException e) {
 		   
 		}
-	}
+	}*/
 }
