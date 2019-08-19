@@ -2,6 +2,7 @@ import java.awt.Desktop;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
+import java.awt.image.ImageObserver;
 import java.awt.image.RenderedImage;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -10,23 +11,35 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
 
 import javax.imageio.ImageIO;
+import javax.imageio.plugins.jpeg.JPEGImageWriteParam;
+
 
 public class Get_Image {
 	public static void main(String[] args) throws IOException {
 		Get_Image get = new Get_Image();
+		
+		
+		//BasicFileAttributes 이거 한번 찾아보자.
+		
+		BufferedImage myPicture = ImageIO.read(new File("/Users/bmhan/Documents/결재영수증.jpg"));
+		
+		ImageObserver observer;
+		//observer.imageUpdate(img, infoflags, x, y, width, height)
+		//Image image = new Image();
+		//image.getProperty("/Users/bmhan/Documents/결재영수증.jpg", null);
+		//imggetProperty(String name, ImageObserver observer);
+		
 
-
+		JPEGImageWriteParam jpegParams = new JPEGImageWriteParam(null);
 	
-		String path = "/Users/bmhan/Documents/test_file";
+		//String path = "/Users/bmhan/Documents/test_file";
 		//get.image_resize(path);
 		
-		get.fileUrlReadAndDownload("https://smurfs.toptoon.com/assets/img/toptoon_thumb.jpg", path, "td01.jpg");
+		//get.fileUrlReadAndDownload("https://smurfs.toptoon.com/assets/img/toptoon_thumb.jpg", path, "td01.jpg");
 		//fileUrlReadAndDownload(String fileAddress, String downloadDir, String localFileName)
 		
 		System.out.print("Complete");
@@ -281,6 +294,8 @@ public class Get_Image {
 		}
 	}
 	*/
+	
+	//jsoup
 	
 	/*public static void urlImageDownload(String fileAddress, String downloadDir) {
 		File outputFile = new File(downloadDir); // 저장할 경로 및 파일명
