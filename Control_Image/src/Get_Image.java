@@ -14,23 +14,125 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Iterator;
 
 import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import javax.imageio.metadata.IIOMetadata;
+import javax.imageio.stream.ImageInputStream;
+
+import org.w3c.dom.NamedNodeMap;
+
+import com.sun.org.apache.bcel.internal.classfile.Node;
+import com.sun.xml.internal.ws.api.addressing.WSEndpointReference.Metadata;
 
 public class Get_Image {
 	public static void main(String[] args) throws IOException {
 		Get_Image get = new Get_Image();
 
 
-	
-		String path = "/Users/bmhan/Documents/test_file";
+		
+//		String path = "F:\\외장하드_20190815\\entertainment(사진)_20190706\\1990-2019\\test";
+
+	    String filename = "C:\\Users\\bmhan\\Documents\\20190806_143939.jpg";
+	    if (new File(filename).exists()) {
+	        get.readAndDisplayMetadata(filename);
+	    } else {
+	        System.out.println("cannot find file: " + filename);
+	    }
+		
+		//String path = "F:\\test";
 		//get.image_resize(path);
+		
+		//get.fileRename_front(path);
+		//get.fileRename_delete(path);
 		
 		//get.fileUrlReadAndDownload("https://smurfs.toptoon.com/assets/img/toptoon_thumb.jpg", path, "td01.jpg");
 		//fileUrlReadAndDownload(String fileAddress, String downloadDir, String localFileName)
 		
 		System.out.print("Complete");
 	}
+	
+	void readAndDisplayMetadata( String fileName ) {
+        try {
+
+            File file = new File( fileName );
+            ImageInputStream iis = ImageIO.createImageInputStream(file);
+            Iterator<ImageReader> readers = ImageIO.getImageReaders(iis);
+
+            if (readers.hasNext()) {
+
+                // pick the first available ImageReader
+                ImageReader reader = readers.next();
+
+                // attach source to the reader
+                reader.setInput(iis, true);
+
+                // read metadata of first image
+                IIOMetadata metadata = reader.getImageMetadata(0);
+
+                String[] names = metadata.getMetadataFormatNames();
+                int length = names.length;
+                for (int i = 0; i < length; i++) {
+                    System.out.println( "Format name: " + names[ i ] );
+                    //displayMetadata(metadata.getAsTree(names[i]));
+                }
+            }
+        }
+        catch (Exception e) {
+
+            e.printStackTrace();
+        }
+    }
+
+	/*
+    void displayMetadata(Node root) {
+        displayMetadata(root, 0);
+    }
+
+    void indent(int level) {
+        for (int i = 0; i < level; i++)
+            System.out.print("    ");
+    }
+
+    void displayMetadata(Node node, int level) {
+        // print open tag of element
+        indent(level);
+        System.out.print("<" + node.getNodeName());
+        NamedNodeMap map = node.getAttributes();
+        if (map != null) {
+
+            // print attribute values
+            int length = map.getLength();
+            for (int i = 0; i < length; i++) {
+                Node attr = map.item(i);
+                System.out.print(" " + attr.getNodeName() +
+                                 "=\"" + attr.getNodeValue() + "\"");
+            }
+        }
+
+        Node child = node.getFirstChild();
+        if (child == null) {
+            // no children, so close element and return
+            System.out.println("/>");
+            return;
+        }
+
+        // children, so close current tag
+        System.out.println(">");
+        while (child != null) {
+            // print children recursively
+            displayMetadata(child, level + 1);
+            child = child.getNextSibling();
+        }
+
+        // print close tag of element
+        indent(level);
+        System.out.println("</" + node.getNodeName() + ">");
+    }
+    */
+
+	
 	
 	public void image_resize(String path) throws IOException {
 
@@ -141,11 +243,62 @@ public class Get_Image {
 
 	}
 
-	public void fileRename_front(File mainFile) {
-		File tempFile = new File(mainFile.getParent() + "/20060621_" + mainFile.getName());
-		mainFile.renameTo(tempFile);
+	public void fileRename_front(String path) {
+		// 폴더 안에 있는 파일명의 앞부분을 일괄적으로 업데이트 한다. 
+		File dir = new File(path);
+		File[] fileList = dir.listFiles();
+
+		for (File file : fileList) { // Reads all files in directory
+			if (file.isDirectory()) {
+				String inDir = path + "/" + file.getName() + "";
+				System.out.println("Directory Name :" + inDir);
+				try {
+					getFileName(inDir);
+				} catch (java.lang.NullPointerException e) {
+				}
+			} else {
+				String testName = file.getName();
+				System.out.print("Parent File Name :" + file.getParent() + "--->");
+				System.out.println("File Name :" + testName);
+				
+				System.out.println("Updated file Name : " + file.getName());
+				
+				File tempFile = new File(file.getParent() + "/19000000_" + file.getName());
+				file.renameTo(tempFile);
+				
+				System.out.println("Updated file Name : " + tempFile.getName());
+			}
+		}
 	}
 	
+	public void fileRename_delete(String path) {
+		// 폴더 안에 있는 파일명의 앞부분을 일괄적으로 업데이트 한다. 
+		File dir = new File(path);
+		File[] fileList = dir.listFiles();
 
+		for (File file : fileList) { // Reads all files in directory
+			if (file.isDirectory()) {
+				String inDir = path + "/" + file.getName() + "";
+				System.out.println("Directory Name :" + inDir);
+				try {
+					getFileName(inDir);
+				} catch (java.lang.NullPointerException e) {
+				}
+			} else {
+				String testName = file.getName();
+				System.out.print("Parent File Name :" + file.getParent() + "--->");
+				System.out.println("File Name :" + testName);
+				
+				
+				
+				File tempFile = new File(file.getParent()  + "/" + file.getName().replace("19000000_", ""));
+				
+				file.renameTo(tempFile);
+				System.out.println("Updated file Name : " + tempFile.getName());
+				
+			}
+		}
+	}
+	
 	
 }
