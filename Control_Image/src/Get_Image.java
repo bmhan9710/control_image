@@ -5,18 +5,31 @@ import java.awt.image.BufferedImage;
 import java.awt.image.ImageObserver;
 import java.awt.image.RenderedImage;
 import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Iterator;
 
 import javax.imageio.ImageIO;
 import javax.imageio.plugins.jpeg.JPEGImageWriteParam;
 
+import javax.imageio.ImageReader;
+import javax.imageio.metadata.IIOMetadata;
+import javax.imageio.stream.ImageInputStream;
+
+import org.w3c.dom.NamedNodeMap;
+
+import com.sun.org.apache.bcel.internal.classfile.Node;
+import com.sun.xml.internal.ws.api.addressing.WSEndpointReference.Metadata;
 
 public class Get_Image {
 	public static void main(String[] args) throws IOException {
@@ -25,7 +38,7 @@ public class Get_Image {
 		
 		//BasicFileAttributes 이거 한번 찾아보자.
 		
-		BufferedImage myPicture = ImageIO.read(new File("/Users/bmhan/Documents/결재영수증.jpg"));
+		//BufferedImage myPicture = ImageIO.read(new File("/Users/bmhan/Documents/결재영수증.jpg"));
 		
 		ImageObserver observer;
 		//observer.imageUpdate(img, infoflags, x, y, width, height)
@@ -37,13 +50,64 @@ public class Get_Image {
 		JPEGImageWriteParam jpegParams = new JPEGImageWriteParam(null);
 	
 		//String path = "/Users/bmhan/Documents/test_file";
-		//get.image_resize(path);
+
 		
-		//get.fileUrlReadAndDownload("https://smurfs.toptoon.com/assets/img/toptoon_thumb.jpg", path, "td01.jpg");
-		//fileUrlReadAndDownload(String fileAddress, String downloadDir, String localFileName)
-		
-		System.out.print("Complete");
+		//String path = "F:\\외장하드_20190815\\entertainment(사진)_20190706\\1990-2019\\test";
+
+	    String filename = "C:\\Users\\ByungMinHan\\Desktop\\잡다";
+	    
+	    get.text_file_find(filename);
+	    
 	}
+	
+	public void text_file_find(String path) throws IOException {
+		//String save = "result.txt";
+		String word = "GTS";
+		
+		File dir = new File(path);
+		
+		File[] fileList = dir.listFiles();
+		
+		for (File file : fileList) { // Reads all files in directory
+			if (file.isDirectory()) {
+				String inDir = path + "/" + file.getName() + "";
+
+				System.out.println("Directory Name :" + inDir);
+				try {
+					// This is Directory
+				} catch (java.lang.NullPointerException e) {
+				}
+			} else {
+				System.out.println("File Name :" + file.getName());
+				
+				//저장할 파일 output stream 생성
+		        //PrintWriter writer = new PrintWriter(new FileWriter("새로운 파일명"));
+       
+	        	//읽어들일 파일 input stream 선언
+		        BufferedReader br = null;
+           
+	            //input stream object 생성
+	            br = new BufferedReader(new FileReader(file));
+	            String line = "";
+	           
+	            //각 파일의 한 라인씩 읽어들인다.
+	            while((line = br.readLine()) != null) {
+	                //라인 내용중 검색하고자 단어가 있으면 파일에 기록한다.
+	                if(line.indexOf(word) != -1) {
+	                    //writer.write(word + "=" + file.getAbsolutePath());
+	                	System.out.println("File Name : " + file.getName());
+	                }
+	            }
+	            //writer.flush();
+	          	// input stream close.
+	            br.close();
+	           
+	            //output stream close.
+	            // writer.close();
+			}
+		}
+	}
+	
 	
 	public void image_resize(String path) throws IOException {
 
@@ -154,9 +218,60 @@ public class Get_Image {
 
 	}
 
-	public void fileRename_front(File mainFile) {
-		File tempFile = new File(mainFile.getParent() + "/20060621_" + mainFile.getName());
-		mainFile.renameTo(tempFile);
+	public void fileRename_front(String path) {
+		// 폴더 안에 있는 파일명의 앞부분을 일괄적으로 업데이트 한다. 
+		File dir = new File(path);
+		File[] fileList = dir.listFiles();
+
+		for (File file : fileList) { // Reads all files in directory
+			if (file.isDirectory()) {
+				String inDir = path + "/" + file.getName() + "";
+				System.out.println("Directory Name :" + inDir);
+				try {
+					getFileName(inDir);
+				} catch (java.lang.NullPointerException e) {
+				}
+			} else {
+				String testName = file.getName();
+				System.out.print("Parent File Name :" + file.getParent() + "--->");
+				System.out.println("File Name :" + testName);
+				
+				System.out.println("Updated file Name : " + file.getName());
+				
+				File tempFile = new File(file.getParent() + "/19000000_" + file.getName());
+				file.renameTo(tempFile);
+				
+				System.out.println("Updated file Name : " + tempFile.getName());
+			}
+		}
 	}
 	
+	public void fileRename_delete(String path) {
+		// 폴더 안에 있는 파일명의 앞부분을 일괄적으로 업데이트 한다. 
+		File dir = new File(path);
+		File[] fileList = dir.listFiles();
+
+		for (File file : fileList) { // Reads all files in directory
+			if (file.isDirectory()) {
+				String inDir = path + "/" + file.getName() + "";
+				System.out.println("Directory Name :" + inDir);
+				try {
+					getFileName(inDir);
+				} catch (java.lang.NullPointerException e) {
+				}
+			} else {
+				String testName = file.getName();
+				System.out.print("Parent File Name :" + file.getParent() + "--->");
+				System.out.println("File Name :" + testName);
+				
+				
+				
+				File tempFile = new File(file.getParent()  + "/" + file.getName().replace("19000000_", ""));
+				
+				file.renameTo(tempFile);
+				System.out.println("Updated file Name : " + tempFile.getName());
+				
+			}
+		}
+	}
 }
