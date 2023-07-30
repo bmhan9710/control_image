@@ -1,3 +1,7 @@
+import java.awt.ComponentOrientation;
+import java.awt.Container;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -8,6 +12,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.border.EmptyBorder;
 import javax.swing.filechooser.FileSystemView;
 
 
@@ -25,38 +30,43 @@ public class Get_Image {
 		
 		// set up frame
 		JFrame frame = new JFrame();
-		frame.setSize(500, 500);
-		frame.setTitle("Simple Calculator");
+		frame.setSize(800, 500);
+		frame.setTitle("Text Search Tool");
 		frame.setLocationByPlatform(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		// set up panel
-		JPanel panel = new JPanel();
-		// set layout to 5x2 grid layout
-		panel.setLayout(new GridLayout(5, 2));
-
+		Container panel = new JPanel();
+		
+		panel.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
+		panel.setLayout(new GridBagLayout());
+		GridBagConstraints c = new GridBagConstraints();
+		
 		// set up answer label
 		JLabel answer = new JLabel();
-
+		
+		
+		
 		// set up number text fields
-		JTextField searchPathLbl = new JTextField();
-		JTextField searchTextLbl = new JTextField();
+		JTextField searchPathFld= new JTextField();
+		JTextField searchTextFld = new JTextField();
 
 		
 		
 		// set up buttons
-		JButton add = new JButton();
-		add.setText("+");
-		add.addActionListener(new ActionListener() {
+		JButton searchPathBtn = new JButton();
+		searchPathBtn.setText("Search Path");
+		searchPathBtn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent event) {
 				
 				
 				try {
 					
-					searchText = searchTextLbl.getText();
+					searchText = searchTextFld.getText();
 
 					JFileChooser fileChooser = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
+					fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY); // To enable directories selection only.
 					
 					// invoke the showsOpenDialog function to show the save dialog
 		            int selectFile = fileChooser.showOpenDialog(null);
@@ -64,12 +74,12 @@ public class Get_Image {
 		            // if the user selects a file
 		            if (selectFile == JFileChooser.APPROVE_OPTION) {
 		                // set the label to the path of the selected file
-		            	searchPathLbl.setText(fileChooser.getSelectedFile().getAbsolutePath());
-		            	searchPath = searchPathLbl.getText();
+		            	searchPathFld.setText(fileChooser.getSelectedFile().getAbsolutePath());
+		            	searchPath = searchPathFld.getText();
 		            }
 		            // if the user cancelled the operation
 		            else {
-		            	searchPathLbl.setText("Non selected");
+		            	searchPathFld.setText("Non selected");
 		            }
 
 					Local_Operation lo = new Local_Operation();
@@ -82,20 +92,65 @@ public class Get_Image {
 		});
 		
 		
+		answer.setText("no Error!");
 		
 		
 		// add components to panel
-		panel.add(new JLabel("Number 1"));
-		panel.add(new JLabel("Number 2"));
-		panel.add(searchPathLbl);
-		panel.add(searchTextLbl);
-		panel.add(add);
-		//panel.add(sub);
-		//panel.add(mul);
-		//panel.add(div);
-		panel.add(new JLabel("Answer"));
-		panel.add(answer);
+		panel.add(new JLabel("Find Directory"));
+		
+		c.ipady = 40;      // make this line tall
+		
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.weightx = 1;   // width of object
+		c.weighty = 1;
+		c.gridx = 0;
+		c.gridy = 0;
+		panel.add(searchPathBtn, c);
+		
+		c.fill = GridBagConstraints.HORIZONTAL;
+	    c.weightx = 1;
+	    c.weighty = 1;
+	    c.gridx = 1;
+	    c.gridy = 0;
+		panel.add(searchPathFld, c);
+		c.ipady = 20;      //make this line back to normal
+		//c.gridwidth = 6;
+		
+		
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.weightx = 1;
+		c.weighty = 1;
+		c.gridx = 0;
+		c.gridy = 2;
+		panel.add(new JLabel("Search Text"), c);
+		
+		c.fill = GridBagConstraints.HORIZONTAL;
+		//c.ipady = 40;      //make this component tall
+		c.weightx = 0.5;
+		c.gridwidth = 3;
+		c.weightx = 1;
+		c.weighty = 1;
+		c.gridx = 1;
+		c.gridy = 2;
+		panel.add(searchTextFld, c);
+		
+		
+		
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.weightx = 1;
+		c.weighty = 1;
+		c.gridx = 0;
+		c.gridy = 3;
+		panel.add(answer, c);
+		
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.weightx = 1;
+		c.weighty = 1;
+		c.gridx = 1;
+		c.gridy = 3;
+		panel.add(new JLabel(""), c);
 
+		
 		// add panel to frame and make it visible
 		frame.add(panel);
 		frame.setVisible(true);
