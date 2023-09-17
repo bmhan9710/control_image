@@ -1,6 +1,9 @@
+import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.ComponentOrientation;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
@@ -8,11 +11,15 @@ import java.awt.event.ActionListener;
 import java.util.List;
 
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
 import javax.swing.filechooser.FileSystemView;
@@ -22,8 +29,64 @@ public class UI_Operation {
 	String searchPath="";
 	String searchText="";
 
+	
+	
+	// used by createMenuBar
+	public JMenu createMenu(String title) {
+		JMenu m = new HorizontalMenu(title);
+		m.add("Menu item #1 in " + title);
+		m.add("Menu item #2 in " + title);
+		m.add("Menu item #3 in " + title);
+		
+		JMenu submenu = new HorizontalMenu("Submenu");
+		submenu.add("Submenu item #1");
+		submenu.add("Submenu item #2");
+		m.add(submenu);
+		
+		return m;
+	}
+	
+	class HorizontalMenu extends JMenu {
+	    HorizontalMenu(String label) {
+	      super(label);
+	      JPopupMenu pm = getPopupMenu();
+	      pm.setLayout(new BoxLayout(pm, BoxLayout.LINE_AXIS));
+	    }
+
+	    public Dimension getMinimumSize() {
+	      return getPreferredSize();
+	    }
+
+	    public Dimension getMaximumSize() {
+	      return getPreferredSize();
+	    }
+
+	    public void setPopupMenuVisible(boolean b) {
+	      boolean isVisible = isPopupMenuVisible();
+	      if (b != isVisible) {
+	        if ((b == true) && isShowing()) {
+	          // Set location of popupMenu (pulldown or pullright).
+	          // Perhaps this should be dictated by L&F.
+	          int x = 0;
+	          int y = 0;
+	          Container parent = getParent();
+	          if (parent instanceof JPopupMenu) {
+	            x = 0;
+	            y = getHeight();
+	          } else {
+	            x = getWidth();
+	            y = 0;
+	          }
+	          getPopupMenu().show(this, x, y);
+	        } else {
+	          getPopupMenu().setVisible(false);
+	        }
+	      }
+	    }
+	  }
+	
 	UI_Operation() {
-		// set up frame
+		// Create and set up the window.
 		JFrame frame = new JFrame();
 		frame.setSize(800, 500);
 		frame.setTitle("Text Search Tool");
@@ -31,12 +94,35 @@ public class UI_Operation {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		// set up panel
-		Container panel = new JPanel();
+		JPanel tabPanel = new JPanel();
+		tabPanel.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
+		//panel.setLayout(new GridBagLayout());
 		
 		
-		panel.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
-		panel.setLayout(new GridBagLayout());
-		panel.setBounds(10, 10, 10, 10);
+		
+		JMenuBar menuBar = new JMenuBar();
+		menuBar.setLayout(new BoxLayout(menuBar, BoxLayout.Y_AXIS));
+		menuBar.add(createMenu("Menu 1"));
+		menuBar.add(createMenu("Menu 2"));
+		menuBar.add(createMenu("Menu 3"));
+		menuBar.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 1, Color.BLACK));
+
+		tabPanel.setBackground(Color.WHITE); // contrasting bg
+		//panel.setBounds(10, 10, 10, 10);
+		
+		tabPanel.add(menuBar, BorderLayout.LINE_START);
+		
+		//tabPanel.setLayout(new FlowLayout(1, 1, 1));
+		
+		
+		JPanel panel2 = new JPanel();
+		panel2.setLayout(new GridBagLayout());
+		panel2.setBounds(10, 10, 10, 10);
+		panel2.setComponentOrientation(ComponentOrientation.UNKNOWN);
+		//panel2.add(menuBar, BorderLayout.LINE_START);
+		//panel2.setLayout(new FlowLayout(2,2, 2));
+		
+		
 		
 		// set up labels
 		JLabel directoryLbl = new JLabel();
@@ -124,7 +210,7 @@ public class UI_Operation {
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		//directoryLbl.setBorder(edge);
-		panel.add(directoryLbl, gbc);
+		panel2.add(directoryLbl, gbc);
 		
 		
 		// ROW 1
@@ -137,7 +223,7 @@ public class UI_Operation {
 		gbc.gridy = 1;
 		browsePathBtn.setPreferredSize(new Dimension(50, 20));
 		browsePathBtn.setBorder(edge);
-		panel.add(browsePathBtn, gbc);
+		panel2.add(browsePathBtn, gbc);
 		
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 	    gbc.weightx = 1;
@@ -145,7 +231,7 @@ public class UI_Operation {
 	    gbc.gridx = 1;
 	    gbc.gridy = 1;
 		//gbc.gridwidth = 6;
-		panel.add(searchPathFld, gbc);
+		panel2.add(searchPathFld, gbc);
 		searchPathFld.setBorder(edge);
 		
 		
@@ -157,7 +243,7 @@ public class UI_Operation {
 		gbc.gridx = 0;
 		gbc.gridy = 2;
 		//searchTxtLbl.setBorder(edge);
-		panel.add(searchTxtLbl, gbc);
+		panel2.add(searchTxtLbl, gbc);
 		
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		//gbc.weightx = 0.5;
@@ -167,7 +253,7 @@ public class UI_Operation {
 		gbc.gridx = 1;
 		gbc.gridy = 2;
 		searchTextFld.setBorder(edge);
-		panel.add(searchTextFld, gbc);
+		panel2.add(searchTextFld, gbc);
 		
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 1;
@@ -175,7 +261,7 @@ public class UI_Operation {
 		gbc.gridx = 2;
 		gbc.gridy = 2;
 		searchBtn.setBorder(edge);
-		panel.add(searchBtn, gbc);
+		panel2.add(searchBtn, gbc);
 		
 		
 		// ROW 3
@@ -186,7 +272,7 @@ public class UI_Operation {
 		gbc.gridx = 0;
 		gbc.gridy = 3;
 		//resultLbl.setBorder(edge);
-		panel.add(resultLbl, gbc);
+		panel2.add(resultLbl, gbc);
 		
 		gbc.fill = GridBagConstraints.CENTER;
 		// gbc.gridwidth = 3;
@@ -195,11 +281,15 @@ public class UI_Operation {
 		gbc.gridx = 1;
 		gbc.gridy = 3;
 		//resultVarLbl.setBorder(edge);
-		panel.add(resultVarLbl, gbc);
+		panel2.add(resultVarLbl, gbc);
+		
 		
 		
 		// add panel to frame and make it visible
-		frame.add(panel);
+		//frame.add(panel);
+		frame.add(tabPanel, BorderLayout.WEST);
+		frame.add(panel2, BorderLayout.CENTER);
+		//frame.add(panel2);
 		frame.setVisible(true);
 	}
 	
