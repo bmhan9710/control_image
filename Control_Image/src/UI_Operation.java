@@ -8,6 +8,8 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.List;
 
 import javax.swing.BorderFactory;
@@ -102,7 +104,40 @@ public class UI_Operation {
 		
 		JMenuBar menuBar = new JMenuBar();
 		menuBar.setLayout(new BoxLayout(menuBar, BoxLayout.Y_AXIS));
-		menuBar.add(createMenu("Menu 1"));
+		JMenu menu1 =createMenu("Menu 1"); 
+		menuBar.add(menu1);
+		
+		menu1.addMouseListener(new MouseListener() {
+		  @Override
+		  public void mouseClicked(MouseEvent e) {
+		    // action here
+				System.out.print("Click clicked");
+		  }
+
+		  @Override
+		  public void mouseEntered(MouseEvent arg0) {
+			  // TODO Auto-generated method stub
+		  }
+
+			@Override
+			public void mouseExited(MouseEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void mousePressed(MouseEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		
 		menuBar.add(createMenu("Menu 2"));
 		menuBar.add(createMenu("Menu 3"));
 		menuBar.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 1, Color.BLACK));
@@ -115,14 +150,21 @@ public class UI_Operation {
 		//tabPanel.setLayout(new FlowLayout(1, 1, 1));
 		
 		
-		JPanel panel2 = new JPanel();
-		panel2.setLayout(new GridBagLayout());
-		panel2.setBounds(10, 10, 10, 10);
-		panel2.setComponentOrientation(ComponentOrientation.UNKNOWN);
-		//panel2.add(menuBar, BorderLayout.LINE_START);
-		//panel2.setLayout(new FlowLayout(2,2, 2));
 		
-		
+		// add panel to frame and make it visible
+		//frame.add(panel);
+		frame.add(tabPanel, BorderLayout.WEST);
+		frame.add(menu001_Open(), BorderLayout.CENTER);
+		//frame.add(panel2);
+		frame.setVisible(true);
+	}
+	
+	
+	public JPanel menu001_Open() {
+		JPanel panel = new JPanel();
+		panel.setLayout(new GridBagLayout());
+		panel.setBounds(10, 10, 10, 10);
+		panel.setComponentOrientation(ComponentOrientation.UNKNOWN);
 		
 		// set up labels
 		JLabel directoryLbl = new JLabel();
@@ -210,7 +252,7 @@ public class UI_Operation {
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		//directoryLbl.setBorder(edge);
-		panel2.add(directoryLbl, gbc);
+		panel.add(directoryLbl, gbc);
 		
 		
 		// ROW 1
@@ -223,7 +265,7 @@ public class UI_Operation {
 		gbc.gridy = 1;
 		browsePathBtn.setPreferredSize(new Dimension(50, 20));
 		browsePathBtn.setBorder(edge);
-		panel2.add(browsePathBtn, gbc);
+		panel.add(browsePathBtn, gbc);
 		
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 	    gbc.weightx = 1;
@@ -231,7 +273,7 @@ public class UI_Operation {
 	    gbc.gridx = 1;
 	    gbc.gridy = 1;
 		//gbc.gridwidth = 6;
-		panel2.add(searchPathFld, gbc);
+		panel.add(searchPathFld, gbc);
 		searchPathFld.setBorder(edge);
 		
 		
@@ -243,7 +285,7 @@ public class UI_Operation {
 		gbc.gridx = 0;
 		gbc.gridy = 2;
 		//searchTxtLbl.setBorder(edge);
-		panel2.add(searchTxtLbl, gbc);
+		panel.add(searchTxtLbl, gbc);
 		
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		//gbc.weightx = 0.5;
@@ -253,7 +295,7 @@ public class UI_Operation {
 		gbc.gridx = 1;
 		gbc.gridy = 2;
 		searchTextFld.setBorder(edge);
-		panel2.add(searchTextFld, gbc);
+		panel.add(searchTextFld, gbc);
 		
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 1;
@@ -261,7 +303,7 @@ public class UI_Operation {
 		gbc.gridx = 2;
 		gbc.gridy = 2;
 		searchBtn.setBorder(edge);
-		panel2.add(searchBtn, gbc);
+		panel.add(searchBtn, gbc);
 		
 		
 		// ROW 3
@@ -272,7 +314,7 @@ public class UI_Operation {
 		gbc.gridx = 0;
 		gbc.gridy = 3;
 		//resultLbl.setBorder(edge);
-		panel2.add(resultLbl, gbc);
+		panel.add(resultLbl, gbc);
 		
 		gbc.fill = GridBagConstraints.CENTER;
 		// gbc.gridwidth = 3;
@@ -281,16 +323,9 @@ public class UI_Operation {
 		gbc.gridx = 1;
 		gbc.gridy = 3;
 		//resultVarLbl.setBorder(edge);
-		panel2.add(resultVarLbl, gbc);
+		panel.add(resultVarLbl, gbc);
 		
-		
-		
-		// add panel to frame and make it visible
-		//frame.add(panel);
-		frame.add(tabPanel, BorderLayout.WEST);
-		frame.add(panel2, BorderLayout.CENTER);
-		//frame.add(panel2);
-		frame.setVisible(true);
+		return panel;
 	}
 	
 }
