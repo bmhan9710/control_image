@@ -24,6 +24,7 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.JTextPane;
 import javax.swing.border.Border;
 import javax.swing.filechooser.FileSystemView;
 
@@ -193,8 +194,9 @@ public class UI_Operation {
 		JLabel resultLbl = new JLabel();
 		resultLbl.setText("Result");
 		
-		JLabel resultVarLbl = new JLabel();
+		JTextPane resultVarLbl = new JTextPane();
 		resultVarLbl.setText("No Input");
+		resultVarLbl.setEditable(false);
 		JScrollPane resultVarLblPane;
 		resultVarLblPane = new JScrollPane(resultVarLbl, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);	
 
@@ -249,7 +251,7 @@ public class UI_Operation {
 					List<String> resultList = lo.findTextFromFile(searchPath, searchText);
 					
 					for(int i=0; i<resultList.size(); i++) {
-						resultTxt = resultTxt + " " + resultList.get(i) + "<br>";
+						resultTxt = resultTxt + " " + resultList.get(i) + "\n";
 					}
 				} catch (Exception e) {
 					resultVarLbl.setText("Error!");
@@ -257,7 +259,7 @@ public class UI_Operation {
 					if("".equals(resultTxt)) {
 						resultTxt = "Nothing found";
 					}
-					resultVarLbl.setText("<html>" + resultTxt + "</html>");
+					resultVarLbl.setText("" + resultTxt + "");
 					
 					
 				}
