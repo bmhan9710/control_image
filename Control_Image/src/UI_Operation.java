@@ -22,6 +22,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
 import javax.swing.filechooser.FileSystemView;
@@ -191,9 +192,12 @@ public class UI_Operation {
 		searchTxtLbl.setText("Search Text");
 		JLabel resultLbl = new JLabel();
 		resultLbl.setText("Result");
+		
 		JLabel resultVarLbl = new JLabel();
 		resultVarLbl.setText("No Input");
-		
+		JScrollPane resultVarLblPane;
+		resultVarLblPane = new JScrollPane(resultVarLbl, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);	
+
 		
 		// set up number text fields
 		JTextField searchPathFld= new JTextField();
@@ -254,6 +258,8 @@ public class UI_Operation {
 						resultTxt = "Nothing found";
 					}
 					resultVarLbl.setText("<html>" + resultTxt + "</html>");
+					
+					
 				}
 			}
 		});
@@ -274,7 +280,7 @@ public class UI_Operation {
 		
 		
 		// ROW 1
-		gbc.ipady = 40;      // make this row tall
+		gbc.ipady = 40;      // make this height tall
 		
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 1;   // width of object
@@ -334,14 +340,16 @@ public class UI_Operation {
 		//resultLbl.setBorder(edge);
 		panel.add(resultLbl, gbc);
 		
-		gbc.fill = GridBagConstraints.CENTER;
-		// gbc.gridwidth = 3;
+		
+		gbc.ipady = 100;      // make this height tall
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		//gbc.gridheight= 3;
 		gbc.weightx = 1;
-		gbc.weighty = 1;
+		gbc.weighty = 3;
 		gbc.gridx = 1;
 		gbc.gridy = 3;
 		//resultVarLbl.setBorder(edge);
-		panel.add(resultVarLbl, gbc);
+		panel.add(resultVarLblPane, gbc);
 		
 		return panel;
 	}
@@ -361,7 +369,6 @@ public class UI_Operation {
 		resultLbl.setText("Result2");
 		JLabel resultVarLbl = new JLabel();
 		resultVarLbl.setText("No Input2");
-		
 		
 		// set up number text fields
 		JTextField searchPathFld= new JTextField();
