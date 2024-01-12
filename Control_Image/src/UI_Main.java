@@ -52,7 +52,12 @@ public class UI_Main {
 	}
 	
 	class HorizontalMenu extends JMenu {
-	    HorizontalMenu(String label) {
+	    /**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
+		HorizontalMenu(String label) {
 	      super(label);
 	      JPopupMenu pm = getPopupMenu();
 	      pm.setLayout(new BoxLayout(pm, BoxLayout.LINE_AXIS));

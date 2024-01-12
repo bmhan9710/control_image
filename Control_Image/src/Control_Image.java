@@ -1,7 +1,5 @@
 import java.io.IOException;
 
-
-
 public class Control_Image {
 	
 	public static void main(String[] args) throws IOException {
