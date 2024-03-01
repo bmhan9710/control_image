@@ -3,30 +3,15 @@ import java.awt.Color;
 import java.awt.ComponentOrientation;
 import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.List;
-
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
-import javax.swing.JScrollPane;
-import javax.swing.JTextField;
-import javax.swing.JTextPane;
-import javax.swing.border.Border;
-import javax.swing.filechooser.FileSystemView;
 
 public class UI_Main {
 	
@@ -116,11 +101,15 @@ public class UI_Main {
 		menuBar.add(menu1);
 		JMenu menu2 =createMenu("Menu 2"); 
 		menuBar.add(menu2);
+		JMenu menu3 =createMenu("Menu 3"); 
+		menuBar.add(menu3);
 		
 		UI_MENU_001 menu001 = new UI_MENU_001();
 		UI_MENU_002 menu002 = new UI_MENU_002();
+		UI_MENU_003 menu003 = new UI_MENU_003();
 		JPanel menu001_panel = menu001.panel();
 		JPanel menu002_panel = menu002.panel();
+		JPanel menu003_panel = menu002.panel();
 		
 		menu1.addMouseListener(new MouseListener() {
 			@Override
@@ -129,7 +118,8 @@ public class UI_Main {
 				System.out.println("Menu1 clicked");
 				frame.setVisible(false);
 				frame.remove(menu002_panel);
-				//frame.add(tabPanel, BorderLayout.WEST);
+				frame.remove(menu003_panel);
+
 				frame.add(menu001_panel);
 				frame.setVisible(true);
 			}
@@ -150,7 +140,8 @@ public class UI_Main {
 				System.out.println("Menu2 clicked");
 				frame.setVisible(false);
 				frame.remove(menu001_panel);
-				//frame.add(tabPanel, BorderLayout.WEST);
+				frame.remove(menu003_panel);
+
 				frame.add(menu002_panel);
 				frame.setVisible(true);
 			}
@@ -164,8 +155,31 @@ public class UI_Main {
 			public void mouseReleased(MouseEvent arg0) {}
 		});
 		
-		menuBar.add(createMenu("Menu 3"));
+		menu3.addMouseListener(new MouseListener() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+			    // action here
+				System.out.println("Menu3 clicked");
+				frame.setVisible(false);
+				frame.remove(menu001_panel);
+				frame.remove(menu002_panel);
+				
+				frame.add(menu003_panel);
+				frame.setVisible(true);
+			}
+			@Override
+			public void mouseEntered(MouseEvent arg0) {}
+			@Override
+			public void mouseExited(MouseEvent arg0) {}
+			@Override
+			public void mousePressed(MouseEvent arg0) {}
+			@Override
+			public void mouseReleased(MouseEvent arg0) {}
+		});
+		
+		// Set border layout of menu buttons
 		menuBar.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 1, Color.BLACK));
+		
 
 		tabPanel.setBackground(Color.WHITE); // contrasting bg
 		//tabPanel.setBounds(10, 10, 10, 10);

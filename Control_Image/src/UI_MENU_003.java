@@ -4,23 +4,68 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.List;
 
+import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTextField;
-import javax.swing.JTextPane;
 import javax.swing.border.Border;
 import javax.swing.filechooser.FileSystemView;
 
-public class UI_MENU_001 {
+import org.im4java.core.ConvertCmd;
+import org.im4java.core.IM4JavaException;
+import org.im4java.core.IMOperation;
+import org.im4java.core.Stream2BufferedImage;
+import org.im4java.process.Pipe;
+
+public class UI_MENU_003 {
 	
 	String searchPath="";
-	String searchText="";
+	//String searchText="";
+	static String IMAGE_MAGICK_PATH;
+	
+	public static byte[] convertHEICtoJPEG(byte[] heicBytes) throws IOException, InterruptedException, IM4JavaException {
+	    IMOperation op = new IMOperation();
+	    op.addImage("-");
+	    op.addImage("jpeg:-");
+	    File tempFile = File.createTempFile("temp", ".heic");
+	    try (FileOutputStream fos = new FileOutputStream(tempFile)) {
+	        fos.write(heicBytes);
+	    }
+	    FileInputStream fis = new FileInputStream(tempFile);
+	    Pipe pipeIn  = new Pipe(fis,null);
+	    ConvertCmd convert = new ConvertCmd();
+	    convert.setSearchPath(IMAGE_MAGICK_PATH);
+	    convert.setInputProvider(pipeIn); 
+	    Stream2BufferedImage s2b = new Stream2BufferedImage();
+	    convert.setOutputConsumer(s2b);
+	    convert.run(op);
+	    BufferedImage image = s2b.getImage();
+	    byte[] imageBytes = imageToBytes(image);
+	    fis.close();
+	    return imageBytes;
+
+	}
+
+
+	private static byte[] imageToBytes(BufferedImage image) throws IOException {
+	    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+	    ImageIO.write(image, "jpeg", baos);
+	    baos.flush();
+	    byte[] imageBytes = baos.toByteArray();
+	    baos.close();
+	    return imageBytes;
+	}
 	
 	public JPanel panel() {
 		JPanel panel = new JPanel();
@@ -30,23 +75,28 @@ public class UI_MENU_001 {
 		
 		// set up labels
 		JLabel directoryLbl = new JLabel();
-		directoryLbl.setText("Find Text from browsed Folder");
-		JLabel searchTxtLbl = new JLabel();
-		searchTxtLbl.setText("Search Text");
+		directoryLbl.setText("Replace Text from Files");
+		
+		JLabel originalStrLbl = new JLabel();
+		originalStrLbl.setText("Original Text");
+		
+		JLabel replaceStrLbl = new JLabel();
+		replaceStrLbl.setText("Replace Text");
+		
+		
+		
 		JLabel resultLbl = new JLabel();
 		resultLbl.setText("Result");
-		
-		JTextPane resultVarLbl = new JTextPane();
+		JLabel resultVarLbl = new JLabel();
 		resultVarLbl.setText("No Input");
-		resultVarLbl.setEditable(false);
-		JScrollPane resultVarLblPane;
-		resultVarLblPane = new JScrollPane(resultVarLbl, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);	
-
 		
-		// set up number text fields
+		// set up path search text fields
 		JTextField searchPathFld= new JTextField();
 		JTextField searchTextFld = new JTextField();
 
+		// set up original, replace search text fields
+		JTextField originalStrFld= new JTextField();
+		JTextField replaceStrFld= new JTextField();
 		
 		
 		// set up browse path button
@@ -79,31 +129,30 @@ public class UI_MENU_001 {
 			}
 		});
 		
-		// set up search button
-		JButton searchBtn = new JButton();
-		searchBtn.setText("Search");
-		searchBtn.addActionListener(new ActionListener() {
+		// set up replace button
+		JButton replaceBtn = new JButton();
+		replaceBtn.setText("Replace");
+		replaceBtn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent event) {
-				String resultTxt = "";
+				String resultStr = "";
+				String originalStr = "";
+				String replaceStr = "";
 				
 				try {
-					searchText = searchTextFld.getText();
-					Operation lo = new Operation();
-					List<String> resultList = lo.findTextFromFile(searchPath, searchText);
+					originalStr= originalStrFld.getText();
+					replaceStr = replaceStrFld.getText();
 					
-					for(int i=0; i<resultList.size(); i++) {
-						resultTxt = resultTxt + " " + resultList.get(i) + "\n";
-					}
+					Operation lo = new Operation();
+					lo.fileRename_replace(searchPath, originalStr, replaceStr);
+					
 				} catch (Exception e) {
 					resultVarLbl.setText("Error!");
 				} finally {
-					if("".equals(resultTxt)) {
-						resultTxt = "Nothing found";
+					if("".equals(resultStr)) {
+						resultStr = "Nothing found";
 					}
-					resultVarLbl.setText("" + resultTxt + "");
-					
-					
+					resultVarLbl.setText("Complete");
 				}
 			}
 		});
@@ -124,7 +173,7 @@ public class UI_MENU_001 {
 		
 		
 		// ROW 1
-		gbc.ipady = 40;      // make this height tall
+		gbc.ipady = 40;      // make this row tall
 		
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 1;   // width of object
@@ -153,25 +202,45 @@ public class UI_MENU_001 {
 		gbc.gridx = 0;
 		gbc.gridy = 2;
 		//searchTxtLbl.setBorder(edge);
-		panel.add(searchTxtLbl, gbc);
+		panel.add(originalStrLbl, gbc);
 		
+		// ROW 2
+		//gbc.ipady = 10;      //make this row back to normal
 		gbc.fill = GridBagConstraints.HORIZONTAL;
-		//gbc.weightx = 0.5;
-		//gbc.gridwidth = 5;   // Can change the location of next row
 		gbc.weightx = 1;
 		gbc.weighty = 1;
 		gbc.gridx = 1;
 		gbc.gridy = 2;
-		searchTextFld.setBorder(edge);
-		panel.add(searchTextFld, gbc);
+		originalStrFld.setBorder(edge);
+		panel.add(originalStrFld, gbc);
 		
-		gbc.fill = GridBagConstraints.HORIZONTAL;
+		// ROW 2
+		gbc.ipady = 10;      //make this row back to normal
+		gbc.fill = GridBagConstraints.CENTER;
 		gbc.weightx = 1;
 		gbc.weighty = 1;
 		gbc.gridx = 2;
 		gbc.gridy = 2;
-		searchBtn.setBorder(edge);
-		panel.add(searchBtn, gbc);
+		//replaceStrLbl.setBorder(edge);
+		panel.add(replaceStrLbl, gbc);
+
+		// ROW 2
+		//gbc.ipady = 10;      //make this row back to normal
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.weightx = 1;
+		gbc.weighty = 1;
+		gbc.gridx = 3;
+		gbc.gridy = 2;
+		replaceStrFld.setBorder(edge);
+		panel.add(replaceStrFld, gbc);
+		
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.weightx = 1;
+		gbc.weighty = 1;
+		gbc.gridx = 4;
+		gbc.gridy = 2;
+		replaceBtn.setBorder(edge);
+		panel.add(replaceBtn, gbc);
 		
 		
 		// ROW 3
@@ -184,16 +253,14 @@ public class UI_MENU_001 {
 		//resultLbl.setBorder(edge);
 		panel.add(resultLbl, gbc);
 		
-		
-		gbc.ipady = 100;      // make this height tall
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		//gbc.gridheight= 3;
+		gbc.fill = GridBagConstraints.CENTER;
+		// gbc.gridwidth = 3;
 		gbc.weightx = 1;
-		gbc.weighty = 3;
+		gbc.weighty = 1;
 		gbc.gridx = 1;
 		gbc.gridy = 3;
 		//resultVarLbl.setBorder(edge);
-		panel.add(resultVarLblPane, gbc);
+		panel.add(resultVarLbl, gbc);
 		
 		return panel;
 	}

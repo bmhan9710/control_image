@@ -28,7 +28,7 @@ public class UI_MENU_002 {
 		
 		// set up labels
 		JLabel directoryLbl = new JLabel();
-		directoryLbl.setText("Find Directory");
+		directoryLbl.setText("Replace Text from Files");
 		
 		JLabel originalStrLbl = new JLabel();
 		originalStrLbl.setText("Original Text");
