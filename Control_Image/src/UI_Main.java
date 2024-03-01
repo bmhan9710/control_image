@@ -109,7 +109,7 @@ public class UI_Main {
 		UI_MENU_003 menu003 = new UI_MENU_003();
 		JPanel menu001_panel = menu001.panel();
 		JPanel menu002_panel = menu002.panel();
-		JPanel menu003_panel = menu002.panel();
+		JPanel menu003_panel = menu003.panel();
 		
 		menu1.addMouseListener(new MouseListener() {
 			@Override

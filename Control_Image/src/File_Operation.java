@@ -5,6 +5,7 @@ import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -14,24 +15,29 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.imageio.ImageIO;
 
-public class Operation {
+import org.im4java.core.ConvertCmd;
+import org.im4java.core.IM4JavaException;
+import org.im4java.core.IMOperation;
+import org.im4java.core.Stream2BufferedImage;
+import org.im4java.process.Pipe;
+
+public class File_Operation {
 
 	// Function: Find specific text from selected folder's files
 	public List<String> findTextFromFile(String path, String findText) throws IOException {
 		File dir = new File(path);
 		File[] fileList = dir.listFiles();
-		
 		List<String> resultList = new ArrayList<String>();
 		
 		for (File file : fileList) { // Reads all files in directory
 			if (file.isDirectory()) {
 				String inDir = path + "/" + file.getName() + "";
-
 				System.out.println("Directory Name :" + inDir);
 			} else {
 				System.out.println("Searcing file name " + file.getName());
@@ -48,7 +54,6 @@ public class Operation {
 	                
 	            	// If the letter is found
 	                if(line.indexOf(findText) != -1) {
-	                	
 	                	resultList.add(file.getName());
 	                    System.out.println("Text " + findText + " found in File Name " + file.getName() + ".");
 	                    break;
@@ -57,7 +62,6 @@ public class Operation {
 	            br.close();
 			}
 		}
-		
 		return resultList;
 	}
 	
@@ -74,21 +78,21 @@ public class Operation {
 				String eachFileName = file.getAbsoluteFile().toString();
 				System.out.println(eachFileName);
 
-				// 1. ÆÄÀÏ¿¡¼­ ÀÌ¹ÌÁö ºÒ·¯¿À±â
+				// 1. ï¿½ï¿½ï¿½Ï¿ï¿½ï¿½ï¿½ ï¿½Ì¹ï¿½ï¿½ï¿½ ï¿½Ò·ï¿½ï¿½ï¿½ï¿½ï¿½
 				Image orginalImage = ImageIO.read(new File(eachFileName));
-				// 2. ÀÌ¹ÌÁö »çÀÌÁî ¼öÁ¤
+				// 2. ï¿½Ì¹ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 				Image resizeImage = orginalImage.getScaledInstance((int) (orginalImage.getWidth(null) * (double) 1.4),
 						orginalImage.getHeight(null), Image.SCALE_SMOOTH);
-				// ¼Óµµº¸´Ù ÀÌ¹ÌÁö ºÎµå·¯¿ò ¿ì¼± (SCALE_AREA_AVERAGING, SCALE_DEFAULT, SCALE_FAST,
-				// SCALE_REPLICATE, SCALE_SMOOTH Áß¿¡ ¼±ÅÃ)
-				// 3. °á°ú¹°À» ¿Å±æ ÀÌ¹ÌÁö »ý¼º
+				// ï¿½Óµï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¹ï¿½ï¿½ï¿½ ï¿½Îµå·¯ï¿½ï¿½ ï¿½ì¼± (SCALE_AREA_AVERAGING, SCALE_DEFAULT, SCALE_FAST,
+				// SCALE_REPLICATE, SCALE_SMOOTH ï¿½ß¿ï¿½ ï¿½ï¿½ï¿½ï¿½)
+				// 3. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Å±ï¿½ ï¿½Ì¹ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 				BufferedImage newImage = new BufferedImage((int) (orginalImage.getWidth(null) * (double) 1.4),
 						orginalImage.getHeight(null), BufferedImage.TYPE_INT_RGB);
-				// 4. »ý¼ºÇÑ ÀÌ¹ÌÁö¿¡ Å©±â ¼öÁ¤µÈ ÀÌ¹ÌÁö ±×¸®±â
+				// 4. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¹ï¿½ï¿½ï¿½ï¿½ï¿½ Å©ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¹ï¿½ï¿½ï¿½ ï¿½×¸ï¿½ï¿½ï¿½
 				Graphics g = newImage.getGraphics();
 				g.drawImage(resizeImage, 0, 0, null);
 				g.dispose();
-				// 5. »õ·Î »ý¼ºÇÑ ÀÌ¹ÌÁö¸¦ ÆÄÀÏ·Î ÀúÀåÇÏ±â
+				// 5. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¹ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï·ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½
 				ImageIO.write((RenderedImage) newImage, "jpg", new File(path + "/New_File" + i + ".jpg"));
 
 			} else {
@@ -122,7 +126,7 @@ public class Operation {
 				System.out.println("Updated file Name : " + file.getName());
 				// }
 
-				// fileCopy(file.getAbsolutePath(), "/Users/IBM_ADMIN/Desktop/SoW/" + "[°è¾à¼­]" +
+				// fileCopy(file.getAbsolutePath(), "/Users/IBM_ADMIN/Desktop/SoW/" + "[ï¿½ï¿½à¼­]" +
 				// file.getName());
 
 			}
@@ -172,7 +176,7 @@ public class Operation {
 	}
 
 	public void fileRename_front(String path) {
-		// Æú´õ ¾È¿¡ ÀÖ´Â ÆÄÀÏ¸íÀÇ ¾ÕºÎºÐÀ» ÀÏ°ýÀûÀ¸·Î ¾÷µ¥ÀÌÆ® ÇÑ´Ù. 
+		// ï¿½ï¿½ï¿½ï¿½ ï¿½È¿ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½Ï¸ï¿½ï¿½ï¿½ ï¿½ÕºÎºï¿½ï¿½ï¿½ ï¿½Ï°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½Ñ´ï¿½. 
 		File dir = new File(path);
 		File[] fileList = dir.listFiles();
 
@@ -200,7 +204,7 @@ public class Operation {
 	}
 	
 	public void fileRename_delete(String path) {
-		// Æú´õ ¾È¿¡ ÀÖ´Â ÆÄÀÏ¸íÀÇ ¾ÕºÎºÐÀ» ÀÏ°ýÀûÀ¸·Î ¾÷µ¥ÀÌÆ® ÇÑ´Ù. 
+		// ï¿½ï¿½ï¿½ï¿½ ï¿½È¿ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½Ï¸ï¿½ï¿½ï¿½ ï¿½ÕºÎºï¿½ï¿½ï¿½ ï¿½Ï°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½Ñ´ï¿½. 
 		File dir = new File(path);
 		File[] fileList = dir.listFiles();
 
@@ -228,8 +232,8 @@ public class Operation {
 		}
 	}
 	
+	// Function: Replace letters of the files in the path
 	public void fileRename_replace(String path, String originalStr, String replaceStr) {
-		// Æú´õ ¾È¿¡ ÀÖ´Â ÆÄÀÏ¸íÀÇ ¾ÕºÎºÐÀ» ÀÏ°ýÀûÀ¸·Î ¾÷µ¥ÀÌÆ® ÇÑ´Ù. 
 		File dir = new File(path);
 		File[] fileList = dir.listFiles();
 
@@ -264,7 +268,7 @@ public class Operation {
 		}
 	}
 	
-	// URL¿¡¼­ ÀÌ¹ÌÁö ´Ù¿î·Îµå ¹Þ¾Æ¿À´Â ÇÔ¼ö.
+	// URLï¿½ï¿½ï¿½ï¿½ ï¿½Ì¹ï¿½ï¿½ï¿½ ï¿½Ù¿ï¿½Îµï¿½ ï¿½Þ¾Æ¿ï¿½ï¿½ï¿½ ï¿½Ô¼ï¿½.
 	public static void fileUrlReadAndDownload(String fileAddress, String downloadDir, String localFileName) {
 		OutputStream outStream = null;
 		URLConnection uCon = null;
@@ -278,12 +282,12 @@ public class Operation {
 			byte[] buf;
 			int byteRead;
 			int byteWritten = 0;
-			int size = 10000;   // ÀÓÀÇ·Î Á¤ÇÔ
+			int size = 10000;   // ï¿½ï¿½ï¿½Ç·ï¿½ ï¿½ï¿½ï¿½ï¿½
 			Url = new URL(fileAddress);
 			outStream = new BufferedOutputStream(new FileOutputStream(downloadDir + "\\" + localFileName));
 
 			uCon = Url.openConnection();
-			uCon.addRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)");  // 403 ¿¡·¯ ¹æÁöÇØÁÖ´Â ÄÚµå
+			uCon.addRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)");  // 403 ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ ï¿½Úµï¿½
 			is = uCon.getInputStream();
 			buf = new byte[size];
 			while ((byteRead = is.read(buf)) != -1) {
@@ -308,6 +312,74 @@ public class Operation {
 			}
 		}
 	}
+	
+	public void convertFileJpg(String filePath) {
+		File dir = new File(filePath);
+		File[] fileList = dir.listFiles();
+		List<String> resultList = new ArrayList<String>();
+		
+		for (File file : fileList) { // Reads all files in directory
+			if (file.isDirectory()) {
+				String inDir = filePath + "/" + file.getName() + "";
+				System.out.println("Directory Name :" + inDir);
+			} else {
+				System.out.println("Searcing file name " + file.getName());
+
+				byte[] fileContent = null;
+				// Read file from folder
+				try {
+					fileContent = Files.readAllBytes(file.toPath());
+					
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				try {
+					convertHEICtoJPEG(fileContent);
+				} catch (IOException | InterruptedException | IM4JavaException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+			}
+		}
+	}
+	
+	
+	public static byte[] convertHEICtoJPEG(byte[] heicBytes) throws IOException, InterruptedException, IM4JavaException {
+	    IMOperation op = new IMOperation();
+	    op.addImage("-");
+	    op.addImage("jpeg:-");
+	    File tempFile = File.createTempFile("temp", ".heic");
+	    try (FileOutputStream fos = new FileOutputStream(tempFile)) {
+	        fos.write(heicBytes);
+	    }
+	    FileInputStream fis = new FileInputStream(tempFile);
+	    Pipe pipeIn  = new Pipe(fis,null);
+	    ConvertCmd convert = new ConvertCmd();
+	    //convert.setSearchPath(IMAGE_MAGICK_PATH);   // temp : to be deleted
+	    convert.setSearchPath("");
+	    convert.setInputProvider(pipeIn); 
+	    Stream2BufferedImage s2b = new Stream2BufferedImage();
+	    convert.setOutputConsumer(s2b);
+	    convert.run(op);
+	    BufferedImage image = s2b.getImage();
+	    byte[] imageBytes = imageToBytes(image);
+	    fis.close();
+	    return imageBytes;
+
+	}
+
+	private static byte[] imageToBytes(BufferedImage image) throws IOException {
+	    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+	    ImageIO.write(image, "jpeg", baos);
+	    baos.flush();
+	    byte[] imageBytes = baos.toByteArray();
+	    baos.close();
+	    return imageBytes;
+	}
+	
+	
+	
 	
 	public void mergeSort(int[] a, int start, int end) {
 		int temp;

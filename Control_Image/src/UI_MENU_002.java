@@ -43,9 +43,8 @@ public class UI_MENU_002 {
 		JLabel resultVarLbl = new JLabel();
 		resultVarLbl.setText("No Input");
 		
-		// set up path search text fields
+		// set up path search folder path
 		JTextField searchPathFld= new JTextField();
-		JTextField searchTextFld = new JTextField();
 
 		// set up original, replace search text fields
 		JTextField originalStrFld= new JTextField();
@@ -96,7 +95,8 @@ public class UI_MENU_002 {
 					originalStr= originalStrFld.getText();
 					replaceStr = replaceStrFld.getText();
 					
-					Operation lo = new Operation();
+					// Replace file name function execution
+					File_Operation lo = new File_Operation();
 					lo.fileRename_replace(searchPath, originalStr, replaceStr);
 					
 				} catch (Exception e) {

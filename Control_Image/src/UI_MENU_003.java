@@ -4,15 +4,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.List;
-
-import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -22,50 +13,12 @@ import javax.swing.JTextField;
 import javax.swing.border.Border;
 import javax.swing.filechooser.FileSystemView;
 
-import org.im4java.core.ConvertCmd;
-import org.im4java.core.IM4JavaException;
-import org.im4java.core.IMOperation;
-import org.im4java.core.Stream2BufferedImage;
-import org.im4java.process.Pipe;
-
 public class UI_MENU_003 {
 	
 	String searchPath="";
 	//String searchText="";
-	static String IMAGE_MAGICK_PATH;
 	
-	public static byte[] convertHEICtoJPEG(byte[] heicBytes) throws IOException, InterruptedException, IM4JavaException {
-	    IMOperation op = new IMOperation();
-	    op.addImage("-");
-	    op.addImage("jpeg:-");
-	    File tempFile = File.createTempFile("temp", ".heic");
-	    try (FileOutputStream fos = new FileOutputStream(tempFile)) {
-	        fos.write(heicBytes);
-	    }
-	    FileInputStream fis = new FileInputStream(tempFile);
-	    Pipe pipeIn  = new Pipe(fis,null);
-	    ConvertCmd convert = new ConvertCmd();
-	    convert.setSearchPath(IMAGE_MAGICK_PATH);
-	    convert.setInputProvider(pipeIn); 
-	    Stream2BufferedImage s2b = new Stream2BufferedImage();
-	    convert.setOutputConsumer(s2b);
-	    convert.run(op);
-	    BufferedImage image = s2b.getImage();
-	    byte[] imageBytes = imageToBytes(image);
-	    fis.close();
-	    return imageBytes;
-
-	}
-
-
-	private static byte[] imageToBytes(BufferedImage image) throws IOException {
-	    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-	    ImageIO.write(image, "jpeg", baos);
-	    baos.flush();
-	    byte[] imageBytes = baos.toByteArray();
-	    baos.close();
-	    return imageBytes;
-	}
+	
 	
 	public JPanel panel() {
 		JPanel panel = new JPanel();
@@ -75,7 +28,7 @@ public class UI_MENU_003 {
 		
 		// set up labels
 		JLabel directoryLbl = new JLabel();
-		directoryLbl.setText("Replace Text from Files");
+		directoryLbl.setText("Convert to JPG file");
 		
 		JLabel originalStrLbl = new JLabel();
 		originalStrLbl.setText("Original Text");
@@ -90,10 +43,9 @@ public class UI_MENU_003 {
 		JLabel resultVarLbl = new JLabel();
 		resultVarLbl.setText("No Input");
 		
-		// set up path search text fields
+		// set up path search folder path
 		JTextField searchPathFld= new JTextField();
-		JTextField searchTextFld = new JTextField();
-
+		
 		// set up original, replace search text fields
 		JTextField originalStrFld= new JTextField();
 		JTextField replaceStrFld= new JTextField();
@@ -129,10 +81,10 @@ public class UI_MENU_003 {
 			}
 		});
 		
-		// set up replace button
-		JButton replaceBtn = new JButton();
-		replaceBtn.setText("Replace");
-		replaceBtn.addActionListener(new ActionListener() {
+		// set up convert button
+		JButton convertBtn = new JButton();
+		convertBtn.setText("Convert to JPG");
+		convertBtn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent event) {
 				String resultStr = "";
@@ -143,8 +95,8 @@ public class UI_MENU_003 {
 					originalStr= originalStrFld.getText();
 					replaceStr = replaceStrFld.getText();
 					
-					Operation lo = new Operation();
-					lo.fileRename_replace(searchPath, originalStr, replaceStr);
+					File_Operation lo = new File_Operation();
+					//lo.fileRename_replace(searchPath, originalStr, replaceStr);  // temp: to be replace
 					
 				} catch (Exception e) {
 					resultVarLbl.setText("Error!");
@@ -196,51 +148,14 @@ public class UI_MENU_003 {
 		
 		// ROW 2
 		gbc.ipady = 10;      //make this row back to normal
-		gbc.fill = GridBagConstraints.CENTER;
+
+		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 1;
 		gbc.weighty = 1;
 		gbc.gridx = 0;
 		gbc.gridy = 2;
-		//searchTxtLbl.setBorder(edge);
-		panel.add(originalStrLbl, gbc);
-		
-		// ROW 2
-		//gbc.ipady = 10;      //make this row back to normal
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.weightx = 1;
-		gbc.weighty = 1;
-		gbc.gridx = 1;
-		gbc.gridy = 2;
-		originalStrFld.setBorder(edge);
-		panel.add(originalStrFld, gbc);
-		
-		// ROW 2
-		gbc.ipady = 10;      //make this row back to normal
-		gbc.fill = GridBagConstraints.CENTER;
-		gbc.weightx = 1;
-		gbc.weighty = 1;
-		gbc.gridx = 2;
-		gbc.gridy = 2;
-		//replaceStrLbl.setBorder(edge);
-		panel.add(replaceStrLbl, gbc);
-
-		// ROW 2
-		//gbc.ipady = 10;      //make this row back to normal
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.weightx = 1;
-		gbc.weighty = 1;
-		gbc.gridx = 3;
-		gbc.gridy = 2;
-		replaceStrFld.setBorder(edge);
-		panel.add(replaceStrFld, gbc);
-		
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.weightx = 1;
-		gbc.weighty = 1;
-		gbc.gridx = 4;
-		gbc.gridy = 2;
-		replaceBtn.setBorder(edge);
-		panel.add(replaceBtn, gbc);
+		convertBtn.setBorder(edge);
+		panel.add(convertBtn, gbc);
 		
 		
 		// ROW 3

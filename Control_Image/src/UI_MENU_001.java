@@ -89,7 +89,7 @@ public class UI_MENU_001 {
 				
 				try {
 					searchText = searchTextFld.getText();
-					Operation lo = new Operation();
+					File_Operation lo = new File_Operation();
 					List<String> resultList = lo.findTextFromFile(searchPath, searchText);
 					
 					for(int i=0; i<resultList.size(); i++) {
