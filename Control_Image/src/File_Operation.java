@@ -26,6 +26,7 @@ import org.im4java.core.IM4JavaException;
 import org.im4java.core.IMOperation;
 import org.im4java.core.Stream2BufferedImage;
 import org.im4java.process.Pipe;
+import org.im4java.process.ProcessStarter;
 
 public class File_Operation {
 
@@ -319,11 +320,11 @@ public class File_Operation {
 		List<String> resultList = new ArrayList<String>();
 		
 		for (File file : fileList) { // Reads all files in directory
+			String fileFullPath = filePath + "/" + file.getName() + "";
 			if (file.isDirectory()) {
-				String inDir = filePath + "/" + file.getName() + "";
-				System.out.println("Directory Name :" + inDir);
+				System.out.println("Directory Name :" + fileFullPath);
 			} else {
-				System.out.println("Searcing file name " + file.getName());
+				System.out.println("Searcing file name " + fileFullPath);
 
 				byte[] fileContent = null;
 				// Read file from folder
@@ -333,9 +334,10 @@ public class File_Operation {
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
+				
 				try {
-					convertHEICtoJPEG(fileContent);
-				} catch (IOException | InterruptedException | IM4JavaException e) {
+					convertHEICtoJPG("C:/Users/bmhan/Desktop/새 폴더/imagetest/imagesample1.heic", "C:/Users/bmhan/Desktop/새 폴더/imagetest/imagesample1.jpg");
+				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
@@ -344,8 +346,34 @@ public class File_Operation {
 		}
 	}
 	
+	public static void convertHEICtoJPG(String inputPath, String outputPath) throws Exception {
+        // Create a ConvertCmd object
+        ConvertCmd cmd = new ConvertCmd();
+        //cmd.setSearchPath("C:/Users/bmhan/Desktop/새 폴더/imagetest/");
+        // Create an IMOperation object to specify the image processing operations
+        IMOperation operation = new IMOperation();
+
+        // Add the input file path
+        operation.addImage(inputPath);
+
+        System.out.println(" Search path " + cmd.getSearchPath() );
+        
+        // Set the output format to JPG
+        operation.addImage(outputPath);
+
+        
+        cmd.setSearchPath("C:\\Users\\bmhan\\Downloads\\ImageMagick-7.1.1-29-portable-Q16-x64");  // Added "C:\Users\bmhan\Downloads\ImageMagick-7.1.1-29-portable-Q16-x64" to environment variable path
+        //cmd.setGlobalSearchPath("C:/Program Files/ImageMagick-7.1.1-Q16-HDRI");
+        System.out.println(" Search path " + cmd.getGlobalSearchPath() );
+        //ProcessStarter.setGlobalSearchPath
+        
+        
+        // Execute the command
+        cmd.run(operation);
+    }
 	
-	public static byte[] convertHEICtoJPEG(byte[] heicBytes) throws IOException, InterruptedException, IM4JavaException {
+	/*
+	public static byte[] convertHEICtoJPEG(byte[] heicBytes, String filePath) throws IOException, InterruptedException, IM4JavaException {
 	    IMOperation op = new IMOperation();
 	    op.addImage("-");
 	    op.addImage("jpeg:-");
@@ -356,8 +384,8 @@ public class File_Operation {
 	    FileInputStream fis = new FileInputStream(tempFile);
 	    Pipe pipeIn  = new Pipe(fis,null);
 	    ConvertCmd convert = new ConvertCmd();
-	    //convert.setSearchPath(IMAGE_MAGICK_PATH);   // temp : to be deleted
-	    convert.setSearchPath("");
+	    //convert.setSearchPath(IMAGE_MAGICK_PATH);   // Set path
+	    convert.setSearchPath("C:\\\\Users\\\\bmhan\\\\Downloads\\\\ImageMagick-7.1.1-29-portable-Q16-x64");
 	    convert.setInputProvider(pipeIn); 
 	    Stream2BufferedImage s2b = new Stream2BufferedImage();
 	    convert.setOutputConsumer(s2b);
@@ -377,7 +405,7 @@ public class File_Operation {
 	    baos.close();
 	    return imageBytes;
 	}
-	
+	*/
 	
 	
 	
