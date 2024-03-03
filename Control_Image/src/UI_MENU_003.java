@@ -96,7 +96,7 @@ public class UI_MENU_003 {
 					replaceStr = replaceStrFld.getText();
 					
 					File_Operation lo = new File_Operation();
-					//lo.fileRename_replace(searchPath, originalStr, replaceStr);  // temp: to be replace
+					lo.convertFileJpg(searchPath);
 					
 				} catch (Exception e) {
 					resultVarLbl.setText("Error!");

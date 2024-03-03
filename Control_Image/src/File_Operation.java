@@ -317,26 +317,43 @@ public class File_Operation {
 	public void convertFileJpg(String filePath) {
 		File dir = new File(filePath);
 		File[] fileList = dir.listFiles();
-		List<String> resultList = new ArrayList<String>();
 		
 		for (File file : fileList) { // Reads all files in directory
 			String fileFullPath = filePath + "/" + file.getName() + "";
 			if (file.isDirectory()) {
 				System.out.println("Directory Name :" + fileFullPath);
-			} else {
+			}
+			// case where not HEIC format
+			else {
 				System.out.println("Searcing file name " + fileFullPath);
-
-				byte[] fileContent = null;
-				// Read file from folder
-				try {
-					fileContent = Files.readAllBytes(file.toPath());
-					
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
 				
 				try {
-					convertHEICtoJPG("C:/Users/bmhan/Desktop/새 폴더/imagetest/imagesample1.heic", "C:/Users/bmhan/Desktop/새 폴더/imagetest/imagesample1.jpg");
+					String inputPath = fileFullPath;
+					String outputPath = fileFullPath.replace(".HEIC", ".jpg").replace(".heic", ".jpg");
+					System.out.println("inputPath :" + inputPath);
+					System.out.println("outputPath :" + outputPath);
+					
+					
+					// Create a ConvertCmd object
+			        ConvertCmd cmd = new ConvertCmd();
+			        //cmd.setSearchPath("C:/Users/bmhan/Desktop/새 폴더/imagetest/");
+			        // Create an IMOperation object to specify the image processing operations
+			        IMOperation operation = new IMOperation();
+
+			        // Add the input file path
+			        operation.addImage(inputPath);
+			        
+			        // Set the output format to JPG
+			        operation.addImage(outputPath);
+
+			        // Added "C:\Users\bmhan\Downloads\ImageMagick-7.1.1-29-portable-Q16-x64" to Search path
+			        // No environment variable setting required
+			        cmd.setSearchPath("C:\\Users\\bmhan\\Downloads\\ImageMagick-7.1.1-29-portable-Q16-x64");
+
+			    
+			        // Execute the command
+			        cmd.run(operation);
+			        System.out.println("Convert Success!");
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -345,68 +362,6 @@ public class File_Operation {
 			}
 		}
 	}
-	
-	public static void convertHEICtoJPG(String inputPath, String outputPath) throws Exception {
-        // Create a ConvertCmd object
-        ConvertCmd cmd = new ConvertCmd();
-        //cmd.setSearchPath("C:/Users/bmhan/Desktop/새 폴더/imagetest/");
-        // Create an IMOperation object to specify the image processing operations
-        IMOperation operation = new IMOperation();
-
-        // Add the input file path
-        operation.addImage(inputPath);
-
-        System.out.println(" Search path " + cmd.getSearchPath() );
-        
-        // Set the output format to JPG
-        operation.addImage(outputPath);
-
-        
-        cmd.setSearchPath("C:\\Users\\bmhan\\Downloads\\ImageMagick-7.1.1-29-portable-Q16-x64");  // Added "C:\Users\bmhan\Downloads\ImageMagick-7.1.1-29-portable-Q16-x64" to environment variable path
-        //cmd.setGlobalSearchPath("C:/Program Files/ImageMagick-7.1.1-Q16-HDRI");
-        System.out.println(" Search path " + cmd.getGlobalSearchPath() );
-        //ProcessStarter.setGlobalSearchPath
-        
-        
-        // Execute the command
-        cmd.run(operation);
-    }
-	
-	/*
-	public static byte[] convertHEICtoJPEG(byte[] heicBytes, String filePath) throws IOException, InterruptedException, IM4JavaException {
-	    IMOperation op = new IMOperation();
-	    op.addImage("-");
-	    op.addImage("jpeg:-");
-	    File tempFile = File.createTempFile("temp", ".heic");
-	    try (FileOutputStream fos = new FileOutputStream(tempFile)) {
-	        fos.write(heicBytes);
-	    }
-	    FileInputStream fis = new FileInputStream(tempFile);
-	    Pipe pipeIn  = new Pipe(fis,null);
-	    ConvertCmd convert = new ConvertCmd();
-	    //convert.setSearchPath(IMAGE_MAGICK_PATH);   // Set path
-	    convert.setSearchPath("C:\\\\Users\\\\bmhan\\\\Downloads\\\\ImageMagick-7.1.1-29-portable-Q16-x64");
-	    convert.setInputProvider(pipeIn); 
-	    Stream2BufferedImage s2b = new Stream2BufferedImage();
-	    convert.setOutputConsumer(s2b);
-	    convert.run(op);
-	    BufferedImage image = s2b.getImage();
-	    byte[] imageBytes = imageToBytes(image);
-	    fis.close();
-	    return imageBytes;
-
-	}
-
-	private static byte[] imageToBytes(BufferedImage image) throws IOException {
-	    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-	    ImageIO.write(image, "jpeg", baos);
-	    baos.flush();
-	    byte[] imageBytes = baos.toByteArray();
-	    baos.close();
-	    return imageBytes;
-	}
-	*/
-	
 	
 	
 	public void mergeSort(int[] a, int start, int end) {
